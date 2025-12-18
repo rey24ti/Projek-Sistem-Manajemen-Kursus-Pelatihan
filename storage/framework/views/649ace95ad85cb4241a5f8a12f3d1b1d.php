@@ -62,6 +62,26 @@
   <link href="../assets/css/nucleo-svg.css" rel="stylesheet" />
   <!-- CSS Files -->
   <link id="pagestyle" href="../assets/css/soft-ui-dashboard.css?v=1.0.3" rel="stylesheet" />
+  <style>
+    /* Ensure sidebar icons are always visible */
+    .sidenav .nav-link .icon {
+      opacity: 1 !important;
+      visibility: visible !important;
+    }
+    .sidenav .nav-link .icon i {
+      opacity: 1 !important;
+      color: #344767 !important;
+    }
+    .sidenav .nav-link.active .icon i {
+      color: #fff !important;
+    }
+    /* Ensure sidebar is always visible on desktop */
+    @media (min-width: 1200px) {
+      .g-sidenav-show .sidenav {
+        transform: translateX(0) !important;
+      }
+    }
+  </style>
 </head>
 
 <body class="g-sidenav-show  bg-gray-100 <?php echo e((\Request::is('rtl') ? 'rtl' : (Request::is('virtual-reality') ? 'virtual-reality' : ''))); ?> ">
@@ -97,6 +117,17 @@
       }
       Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
     }
+    
+    // Ensure sidebar is always visible on desktop
+    document.addEventListener('DOMContentLoaded', function() {
+      if (window.innerWidth >= 1200) {
+        document.body.classList.add('g-sidenav-show');
+        const sidenav = document.getElementById('sidenav-main');
+        if (sidenav) {
+          sidenav.classList.add('show');
+        }
+      }
+    });
   </script>
 
   <!-- Github buttons -->

@@ -52,7 +52,10 @@
             </main>
         @endif
 
-        @include('components.fixed-plugin')
+        {{-- Fixed plugin optional (hilangkan error jika view tidak ada) --}}
+        @if (View::exists('components.fixed-plugin'))
+            @include('components.fixed-plugin')
+        @endif
     @endif
 
     

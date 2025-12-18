@@ -50,7 +50,10 @@
             </main>
         <?php endif; ?>
 
-        <?php echo $__env->make('components.fixed-plugin', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+        
+        <?php if(View::exists('components.fixed-plugin')): ?>
+            <?php echo $__env->make('components.fixed-plugin', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+        <?php endif; ?>
     <?php endif; ?>
 
     
