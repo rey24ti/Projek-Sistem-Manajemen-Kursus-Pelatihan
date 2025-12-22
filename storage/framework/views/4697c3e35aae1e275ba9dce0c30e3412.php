@@ -8,18 +8,26 @@
             <div class="col-xl-4 col-lg-5 col-md-6 d-flex flex-column mx-auto">
               <div class="card card-plain mt-8">
                 <div class="card-header pb-0 text-left bg-transparent">
-                  <h3 class="font-weight-bolder text-info text-gradient">Welcome back</h3>
-                  <p class="mb-0">Create a new acount<br></p>
-                  <p class="mb-0">OR Sign in with these credentials:</p>
-                  <p class="mb-0">Email <b>admin@softui.com</b></p>
-                  <p class="mb-0">Password <b>secret</b></p>
+                  <h3 class="font-weight-bolder text-info text-gradient">Selamat Datang</h3>
+                  <p class="mb-0">Masuk ke akun Anda untuk melanjutkan</p>
                 </div>
                 <div class="card-body">
-                  <form role="form" method="POST" action="/session">
+                  <form role="form" method="POST" action="/session" autocomplete="off" id="loginForm">
                     <?php echo csrf_field(); ?>
-                    <label>Email</label>
+                    <label class="form-label">Email</label>
                     <div class="mb-3">
-                      <input type="email" class="form-control" name="email" id="email" placeholder="Email" value="admin@softui.com" aria-label="Email" aria-describedby="email-addon">
+                      <input 
+                        type="email" 
+                        class="form-control" 
+                        name="email" 
+                        id="email" 
+                        placeholder="Masukkan email Anda" 
+                        aria-label="Email" 
+                        aria-describedby="email-addon" 
+                        autocomplete="off"
+                        autofill="off"
+                        data-form-type="other"
+                        required>
                       <?php $__errorArgs = ['email'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -31,9 +39,20 @@ if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>
                     </div>
-                    <label>Password</label>
+                    <label class="form-label">Password</label>
                     <div class="mb-3">
-                      <input type="password" class="form-control" name="password" id="password" placeholder="Password" value="secret" aria-label="Password" aria-describedby="password-addon">
+                      <input 
+                        type="password" 
+                        class="form-control" 
+                        name="password" 
+                        id="password" 
+                        placeholder="Masukkan password Anda" 
+                        aria-label="Password" 
+                        aria-describedby="password-addon" 
+                        autocomplete="new-password"
+                        autofill="off"
+                        data-form-type="other"
+                        required>
                       <?php $__errorArgs = ['password'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -46,21 +65,21 @@ endif;
 unset($__errorArgs, $__bag); ?>
                     </div>
                     <div class="form-check form-switch">
-                      <input class="form-check-input" type="checkbox" id="rememberMe" checked="">
-                      <label class="form-check-label" for="rememberMe">Remember me</label>
+                      <input class="form-check-input" type="checkbox" id="rememberMe" name="remember">
+                      <label class="form-check-label" for="rememberMe">Ingat saya</label>
                     </div>
                     <div class="text-center">
-                      <button type="submit" class="btn bg-gradient-info w-100 mt-4 mb-0">Sign in</button>
+                      <button type="submit" class="btn bg-gradient-info w-100 mt-4 mb-0">Masuk</button>
                     </div>
                   </form>
                 </div>
                 <div class="card-footer text-center pt-0 px-lg-2 px-1">
-                <small class="text-muted">Forgot you password? Reset you password 
-                  <a href="/login/forgot-password" class="text-info text-gradient font-weight-bold">here</a>
-                </small>
-                  <p class="mb-4 text-sm mx-auto">
-                    Don't have an account?
-                    <a href="register" class="text-info text-gradient font-weight-bold">Sign up</a>
+                  <small class="text-muted">Lupa password? Reset password Anda 
+                    <a href="/login/forgot-password" class="text-info text-gradient font-weight-bold">di sini</a>
+                  </small>
+                  <p class="mb-4 text-sm mx-auto mt-2">
+                    Belum punya akun?
+                    <a href="<?php echo e(route('register')); ?>" class="text-info text-gradient font-weight-bold">Daftar</a>
                   </p>
                 </div>
               </div>
@@ -75,6 +94,42 @@ unset($__errorArgs, $__bag); ?>
       </div>
     </section>
   </main>
+
+  <script>
+    // Prevent browser autofill
+    document.addEventListener('DOMContentLoaded', function() {
+      const emailInput = document.getElementById('email');
+      const passwordInput = document.getElementById('password');
+      
+      // Clear any autofilled values
+      setTimeout(function() {
+        if (emailInput.value && !emailInput.dataset.userInput) {
+          emailInput.value = '';
+        }
+        if (passwordInput.value && !passwordInput.dataset.userInput) {
+          passwordInput.value = '';
+        }
+      }, 100);
+      
+      // Track user input
+      emailInput.addEventListener('input', function() {
+        this.dataset.userInput = 'true';
+      });
+      
+      passwordInput.addEventListener('input', function() {
+        this.dataset.userInput = 'true';
+      });
+      
+      // Prevent autocomplete dropdown
+      emailInput.addEventListener('focus', function() {
+        this.setAttribute('autocomplete', 'off');
+      });
+      
+      passwordInput.addEventListener('focus', function() {
+        this.setAttribute('autocomplete', 'new-password');
+      });
+    });
+  </script>
 
 <?php $__env->stopSection(); ?>
 
