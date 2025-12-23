@@ -96,6 +96,19 @@
               @enderror
             </div>
           </div>
+<<<<<<< HEAD
+=======
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Nilai Minimum Kelulusan (0-100)</label>
+              <input type="number" name="passing_score" class="form-control @error('passing_score') is-invalid @enderror" value="{{ old('passing_score', $course->passing_score ?? 70) }}" min="0" max="100" required>
+              <small class="text-muted">Nilai minimum yang harus dicapai peserta untuk lulus kursus</small>
+              @error('passing_score')
+              <div class="invalid-feedback">{{ $message }}</div>
+              @enderror
+            </div>
+          </div>
+>>>>>>> eb0562031114ae97354f05b2289eed62aa7a791f
           <div class="mb-3">
             <label class="form-label">Gambar</label>
             @if($course->image)

@@ -39,6 +39,17 @@
         </a>
       </li>
       <li class="nav-item">
+<<<<<<< HEAD
+=======
+        <a class="nav-link <?php echo e((Request::is('users*') ? 'active' : '')); ?>" href="<?php echo e(route('users.index')); ?>">
+          <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center" style="min-width: 32px; min-height: 32px;">
+            <i class="ni ni-circle-08 text-dark text-sm"></i>
+          </div>
+          <span class="nav-link-text ms-1">Pengguna</span>
+        </a>
+      </li>
+      <li class="nav-item">
+>>>>>>> eb0562031114ae97354f05b2289eed62aa7a791f
         <a class="nav-link <?php echo e((Request::is('enrollments*') ? 'active' : '')); ?>" href="<?php echo e(route('enrollments.index')); ?>">
           <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center" style="min-width: 32px; min-height: 32px;">
             <i class="ni ni-single-02 text-dark text-sm"></i>

@@ -14,10 +14,27 @@ class Enrollment extends Model
         'enrollment_date',
         'progress',
         'notes',
+<<<<<<< HEAD
+=======
+        'payment_status',
+        'final_score',
+        'completion_date',
+        'is_passed',
+        'certificate_path',
+        'certificate_number',
+        'certificate_issued_at',
+>>>>>>> eb0562031114ae97354f05b2289eed62aa7a791f
     ];
 
     protected $casts = [
         'enrollment_date' => 'date',
+<<<<<<< HEAD
+=======
+        'completion_date' => 'date',
+        'certificate_issued_at' => 'date',
+        'final_score' => 'decimal:2',
+        'is_passed' => 'boolean',
+>>>>>>> eb0562031114ae97354f05b2289eed62aa7a791f
     ];
 
     public function user(): BelongsTo
@@ -30,6 +47,14 @@ class Enrollment extends Model
         return $this->belongsTo(Course::class);
     }
 
+<<<<<<< HEAD
+=======
+    public function payments(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Payment::class);
+    }
+
+>>>>>>> eb0562031114ae97354f05b2289eed62aa7a791f
     public function getStatusBadgeAttribute(): string
     {
         $badges = [
@@ -41,4 +66,18 @@ class Enrollment extends Model
 
         return $badges[$this->status] ?? 'secondary';
     }
+<<<<<<< HEAD
+=======
+
+    public function getPaymentStatusBadgeAttribute(): string
+    {
+        $badges = [
+            'pending' => 'warning',
+            'verified' => 'success',
+            'rejected' => 'danger',
+        ];
+
+        return $badges[$this->payment_status] ?? 'secondary';
+    }
+>>>>>>> eb0562031114ae97354f05b2289eed62aa7a791f
 }
