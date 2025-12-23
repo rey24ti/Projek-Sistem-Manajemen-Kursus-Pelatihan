@@ -1,9 +1,8 @@
 <?php
-
 namespace App\Http\Controllers;
 
-use App\Models\Enrollment;
 use App\Models\Course;
+use App\Models\Enrollment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -15,10 +14,10 @@ class EnrollmentController extends Controller
 
         // For staff, only show enrollments for their courses
         if (auth()->user()->isStaff()) {
-            $query->whereHas('course', function($q) {
+            $query->whereHas('course', function ($q) {
                 $q->where('trainer_id', auth()->id());
             });
-    }
+        }
 
         // For guest, only show their own enrollments
         if (auth()->user()->isGuest()) {
@@ -30,27 +29,24 @@ class EnrollmentController extends Controller
             $query->where('status', $request->status);
         }
 
-<<<<<<< HEAD
-=======
         // Filter by payment_status
         if ($request->has('payment_status') && $request->payment_status) {
             $query->where('payment_status', $request->payment_status);
         }
 
->>>>>>> eb0562031114ae97354f05b2289eed62aa7a791f
         // Search
         if ($request->has('search') && $request->search) {
-            $query->whereHas('course', function($q) use ($request) {
+            $query->whereHas('course', function ($q) use ($request) {
                 $q->where('title', 'like', '%' . $request->search . '%');
-            })->orWhereHas('user', function($q) use ($request) {
+            })->orWhereHas('user', function ($q) use ($request) {
                 $q->where('name', 'like', '%' . $request->search . '%');
             });
         }
 
         $enrollments = $query->orderBy('created_at', 'desc')->paginate(10);
 
-        $view = auth()->user()->isAdmin() ? 'admin.enrollments.index' : 
-                (auth()->user()->isStaff() ? 'staff.enrollments.index' : 'guest.enrollments.index');
+        $view = auth()->user()->isAdmin() ? 'admin.enrollments.index' :
+        (auth()->user()->isStaff() ? 'staff.enrollments.index' : 'guest.enrollments.index');
 
         return view($view, compact('enrollments'));
     }
@@ -83,9 +79,9 @@ class EnrollmentController extends Controller
         }
 
         Enrollment::create([
-            'user_id' => auth()->id(),
-            'course_id' => $course->id,
-            'status' => 'pending',
+            'user_id'         => auth()->id(),
+            'course_id'       => $course->id,
+            'status'          => 'pending',
             'enrollment_date' => now(),
         ]);
 
@@ -95,36 +91,35 @@ class EnrollmentController extends Controller
     public function update(Request $request, Enrollment $enrollment)
     {
         $validator = Validator::make($request->all(), [
-            'status' => 'required|in:pending,approved,rejected,completed',
-<<<<<<< HEAD
-            'progress' => 'nullable|integer|min:0|max:100',
-=======
-            'payment_status' => 'nullable|in:pending,verified,rejected',
-            'progress' => 'nullable|integer|min:0|max:100',
-            'final_score' => 'nullable|numeric|min:0|max:100',
+            'status'          => 'required|in:pending,approved,rejected,completed',
+
+            'progress'        => 'nullable|integer|min:0|max:100',
+
+            'payment_status'  => 'nullable|in:pending,verified,rejected',
+            'progress'        => 'nullable|integer|min:0|max:100',
+            'final_score'     => 'nullable|numeric|min:0|max:100',
             'completion_date' => 'nullable|date',
->>>>>>> eb0562031114ae97354f05b2289eed62aa7a791f
-            'notes' => 'nullable|string',
+
+            'notes'           => 'nullable|string',
         ]);
 
         if ($validator->fails()) {
             return back()->withErrors($validator)->withInput();
         }
 
-<<<<<<< HEAD
         $enrollment->update($request->all());
 
         return back()->with('success', 'Status pendaftaran berhasil diperbarui.');
-=======
+
         $data = $request->only(['status', 'payment_status', 'progress', 'final_score', 'completion_date', 'notes']);
 
         // Calculate is_passed based on final_score and course passing_score
         if (isset($data['final_score']) && $data['final_score'] !== null) {
-            $course = $enrollment->course;
+            $course            = $enrollment->course;
             $data['is_passed'] = $data['final_score'] >= $course->passing_score;
-            
+
             // Auto set completion_date if final_score is set
-            if (!isset($data['completion_date']) || $data['completion_date'] === null) {
+            if (! isset($data['completion_date']) || $data['completion_date'] === null) {
                 $data['completion_date'] = now();
             }
         }
@@ -141,7 +136,7 @@ class EnrollmentController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'payment_status' => 'required|in:verified,rejected',
-            'notes' => 'nullable|string',
+            'notes'          => 'nullable|string',
         ]);
 
         if ($validator->fails()) {
@@ -153,7 +148,7 @@ class EnrollmentController extends Controller
         ];
 
         if ($request->filled('notes')) {
-            $data['notes'] = $enrollment->notes 
+            $data['notes'] = $enrollment->notes
                 ? $enrollment->notes . "\n[Payment] " . $request->notes
                 : "[Payment] " . $request->notes;
         }
@@ -188,13 +183,13 @@ class EnrollmentController extends Controller
         // If progress is 100%, mark as completed
         if ($request->progress >= 100 && $enrollment->status !== 'completed') {
             $enrollment->update([
-                'status' => 'completed',
+                'status'          => 'completed',
                 'completion_date' => now(),
             ]);
         }
 
         return back()->with('success', 'Progres belajar berhasil diperbarui.');
->>>>>>> eb0562031114ae97354f05b2289eed62aa7a791f
+
     }
 
     public function destroy(Enrollment $enrollment)

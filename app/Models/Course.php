@@ -19,10 +19,9 @@ class Course extends Model
         'status',
         'price',
         'image',
-<<<<<<< HEAD
-=======
+
         'passing_score',
->>>>>>> eb0562031114ae97354f05b2289eed62aa7a791f
+
     ];
 
     protected $casts = [
@@ -51,8 +50,7 @@ class Course extends Model
         return $this->hasMany(CourseMaterial::class);
     }
 
-<<<<<<< HEAD
-=======
+
     public function assignments(): HasMany
     {
         return $this->hasMany(Assignment::class);
@@ -63,7 +61,7 @@ class Course extends Model
         return $this->hasMany(Quiz::class);
     }
 
->>>>>>> eb0562031114ae97354f05b2289eed62aa7a791f
+
     public function getStatusBadgeAttribute(): string
     {
         $badges = [

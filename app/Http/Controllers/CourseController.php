@@ -1,9 +1,8 @@
 <?php
-
 namespace App\Http\Controllers;
 
-use App\Models\Course;
 use App\Models\Category;
+use App\Models\Course;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -24,7 +23,7 @@ class CourseController extends Controller
         // Search
         if ($request->has('search') && $request->search) {
             $query->where('title', 'like', '%' . $request->search . '%')
-                  ->orWhere('description', 'like', '%' . $request->search . '%');
+                ->orWhere('description', 'like', '%' . $request->search . '%');
         }
 
         // Filter by category
@@ -52,11 +51,11 @@ class CourseController extends Controller
             $query->where('status', 'open');
         }
 
-        $courses = $query->orderBy('created_at', 'desc')->paginate(10);
+        $courses    = $query->orderBy('created_at', 'desc')->paginate(10);
         $categories = Category::all();
 
         // Tentukan view berdasarkan role / status login
-        if (!auth()->check()) {
+        if (! auth()->check()) {
             $view = 'guest.courses.index';
         } else {
             $view = auth()->user()->isAdmin()
@@ -72,45 +71,44 @@ class CourseController extends Controller
     public function create()
     {
         $categories = Category::all();
-<<<<<<< HEAD
+
         $trainers = User::whereIn('role', ['admin', 'staff'])->get();
         return view('admin.courses.create', compact('categories', 'trainers'));
-=======
-        
+
         // For staff, they can only assign themselves as trainer
         if (auth()->user()->isStaff()) {
             $trainers = collect([auth()->user()]);
-            $view = 'staff.courses.create';
+            $view     = 'staff.courses.create';
         } else {
             // Admin can assign any trainer
             $trainers = User::whereIn('role', ['admin', 'staff'])->get();
-            $view = 'admin.courses.create';
+            $view     = 'admin.courses.create';
         }
-        
+
         return view($view, compact('categories', 'trainers'));
->>>>>>> eb0562031114ae97354f05b2289eed62aa7a791f
+
     }
 
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'title' => 'required|string|max:255',
-            'description' => 'required|string',
-            'category_id' => 'required|exists:categories,id',
-            'trainer_id' => 'required|exists:users,id',
-            'start_date' => 'required|date',
-            'end_date' => 'required|date|after:start_date',
+            'title'            => 'required|string|max:255',
+            'description'      => 'required|string',
+            'category_id'      => 'required|exists:categories,id',
+            'trainer_id'       => 'required|exists:users,id',
+            'start_date'       => 'required|date',
+            'end_date'         => 'required|date|after:start_date',
             'max_participants' => 'required|integer|min:1',
-            'status' => 'required|in:draft,open,ongoing,completed,cancelled',
-            'price' => 'required|numeric|min:0',
-<<<<<<< HEAD
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-=======
-            'passing_score' => 'required|integer|min:0|max:100',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'status'           => 'required|in:draft,open,ongoing,completed,cancelled',
+            'price'            => 'required|numeric|min:0',
+
+            'image'            => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+
+            'passing_score'    => 'required|integer|min:0|max:100',
+            'image'            => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ], [], [
             'passing_score' => 'nilai minimum kelulusan',
->>>>>>> eb0562031114ae97354f05b2289eed62aa7a791f
+
         ]);
 
         if ($validator->fails()) {
@@ -119,14 +117,11 @@ class CourseController extends Controller
 
         $data = $request->all();
 
-<<<<<<< HEAD
-=======
         // For staff, ensure they can only create courses for themselves
         if (auth()->user()->isStaff() && $data['trainer_id'] != auth()->id()) {
             return back()->with('error', 'Anda hanya dapat membuat kursus untuk diri sendiri.');
         }
 
->>>>>>> eb0562031114ae97354f05b2289eed62aa7a791f
         if ($request->hasFile('image')) {
             $data['image'] = $request->file('image')->store('courses', 'public');
         }
@@ -139,12 +134,11 @@ class CourseController extends Controller
 
     public function show(Course $course)
     {
-<<<<<<< HEAD
+
         $course->load(['category', 'trainer', 'enrollments.user', 'materials']);
-=======
+
         $course->load(['category', 'trainer', 'enrollments.user', 'materials', 'assignments', 'quizzes']);
->>>>>>> eb0562031114ae97354f05b2289eed62aa7a791f
-        
+
         // Check if user is enrolled
         $isEnrolled = false;
         if (auth()->check()) {
@@ -153,7 +147,7 @@ class CourseController extends Controller
                 ->exists();
         }
 
-        if (!auth()->check()) {
+        if (! auth()->check()) {
             $view = 'guest.courses.show';
         } else {
             $view = auth()->user()->isAdmin()
@@ -168,59 +162,55 @@ class CourseController extends Controller
 
     public function edit(Course $course)
     {
-<<<<<<< HEAD
+
         $categories = Category::all();
-        $trainers = User::whereIn('role', ['admin', 'staff'])->get();
+        $trainers   = User::whereIn('role', ['admin', 'staff'])->get();
         return view('admin.courses.edit', compact('course', 'categories', 'trainers'));
-=======
+
         // Check if staff can only edit their own courses
         if (auth()->user()->isStaff() && $course->trainer_id != auth()->id()) {
             abort(403, 'Anda tidak memiliki akses untuk mengedit kursus ini.');
         }
 
         $categories = Category::all();
-        
+
         // For staff, they can only assign themselves as trainer
         if (auth()->user()->isStaff()) {
             $trainers = collect([auth()->user()]);
-            $view = 'staff.courses.edit';
+            $view     = 'staff.courses.edit';
         } else {
             $trainers = User::whereIn('role', ['admin', 'staff'])->get();
-            $view = 'admin.courses.edit';
+            $view     = 'admin.courses.edit';
         }
-        
+
         return view($view, compact('course', 'categories', 'trainers'));
->>>>>>> eb0562031114ae97354f05b2289eed62aa7a791f
+
     }
 
     public function update(Request $request, Course $course)
     {
-<<<<<<< HEAD
-=======
+
         // Check if staff can only edit their own courses
         if (auth()->user()->isStaff() && $course->trainer_id != auth()->id()) {
             abort(403, 'Anda tidak memiliki akses untuk mengedit kursus ini.');
         }
 
->>>>>>> eb0562031114ae97354f05b2289eed62aa7a791f
         $validator = Validator::make($request->all(), [
-            'title' => 'required|string|max:255',
-            'description' => 'required|string',
-            'category_id' => 'required|exists:categories,id',
-            'trainer_id' => 'required|exists:users,id',
-            'start_date' => 'required|date',
-            'end_date' => 'required|date|after:start_date',
+            'title'            => 'required|string|max:255',
+            'description'      => 'required|string',
+            'category_id'      => 'required|exists:categories,id',
+            'trainer_id'       => 'required|exists:users,id',
+            'start_date'       => 'required|date',
+            'end_date'         => 'required|date|after:start_date',
             'max_participants' => 'required|integer|min:1',
-            'status' => 'required|in:draft,open,ongoing,completed,cancelled',
-            'price' => 'required|numeric|min:0',
-<<<<<<< HEAD
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-=======
-            'passing_score' => 'required|integer|min:0|max:100',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'status'           => 'required|in:draft,open,ongoing,completed,cancelled',
+            'price'            => 'required|numeric|min:0',
+            'image'            => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'passing_score'    => 'required|integer|min:0|max:100',
+            'image'            => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ], [], [
             'passing_score' => 'nilai minimum kelulusan',
->>>>>>> eb0562031114ae97354f05b2289eed62aa7a791f
+
         ]);
 
         if ($validator->fails()) {
@@ -229,14 +219,11 @@ class CourseController extends Controller
 
         $data = $request->all();
 
-<<<<<<< HEAD
-=======
         // For staff, ensure they can only assign themselves as trainer
         if (auth()->user()->isStaff() && $data['trainer_id'] != auth()->id()) {
             return back()->with('error', 'Anda hanya dapat mengassign diri sendiri sebagai trainer.');
         }
 
->>>>>>> eb0562031114ae97354f05b2289eed62aa7a791f
         if ($request->hasFile('image')) {
             if ($course->image) {
                 Storage::disk('public')->delete($course->image);
@@ -252,14 +239,12 @@ class CourseController extends Controller
 
     public function destroy(Course $course)
     {
-<<<<<<< HEAD
-=======
+
         // Check if staff can only delete their own courses
         if (auth()->user()->isStaff() && $course->trainer_id != auth()->id()) {
             abort(403, 'Anda tidak memiliki akses untuk menghapus kursus ini.');
         }
 
->>>>>>> eb0562031114ae97354f05b2289eed62aa7a791f
         if ($course->image) {
             Storage::disk('public')->delete($course->image);
         }
