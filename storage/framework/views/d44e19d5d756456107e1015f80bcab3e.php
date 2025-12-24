@@ -13,11 +13,11 @@
             <div class="col-md-6">
               <input type="text" name="search" class="form-control" placeholder="Cari peserta atau kursus..." value="<?php echo e(request('search')); ?>">
             </div>
-<<<<<<< HEAD
+
             <div class="col-md-4">
-=======
+
             <div class="col-md-3">
->>>>>>> eb0562031114ae97354f05b2289eed62aa7a791f
+
               <select name="status" class="form-control">
                 <option value="">Semua Status</option>
                 <option value="pending" <?php echo e(request('status') == 'pending' ? 'selected' : ''); ?>>Pending</option>
@@ -26,8 +26,8 @@
                 <option value="completed" <?php echo e(request('status') == 'completed' ? 'selected' : ''); ?>>Completed</option>
               </select>
             </div>
-<<<<<<< HEAD
-=======
+
+
             <div class="col-md-3">
               <select name="payment_status" class="form-control">
                 <option value="">Semua Status Pembayaran</option>
@@ -36,7 +36,7 @@
                 <option value="rejected" <?php echo e(request('payment_status') == 'rejected' ? 'selected' : ''); ?>>Rejected</option>
               </select>
             </div>
->>>>>>> eb0562031114ae97354f05b2289eed62aa7a791f
+
             <div class="col-md-2">
               <button type="submit" class="btn btn-primary w-100">Filter</button>
             </div>
@@ -49,17 +49,17 @@
                 <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Peserta</th>
                 <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Kursus</th>
                 <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status</th>
-<<<<<<< HEAD
+
                 <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Progress</th>
                 <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Tanggal Daftar</th>
                 <th class="text-secondary opacity-7"></th>
-=======
+
                 <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Pembayaran</th>
                 <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Progress</th>
                 <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Nilai</th>
                 <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Kelulusan</th>
                 <th class="text-secondary opacity-7">Aksi</th>
->>>>>>> eb0562031114ae97354f05b2289eed62aa7a791f
+
               </tr>
             </thead>
             <tbody>
@@ -79,8 +79,8 @@
                 <td class="align-middle text-center text-sm">
                   <span class="badge badge-sm bg-gradient-<?php echo e($enrollment->status_badge); ?>"><?php echo e(ucfirst($enrollment->status)); ?></span>
                 </td>
-<<<<<<< HEAD
-=======
+
+
                 <td class="align-middle text-center text-sm">
                   <span class="badge badge-sm bg-gradient-<?php echo e($enrollment->payment_status_badge); ?>"><?php echo e(ucfirst($enrollment->payment_status)); ?></span>
                   <?php if($enrollment->payment_status == 'pending'): ?>
@@ -89,7 +89,7 @@
                   </div>
                   <?php endif; ?>
                 </td>
->>>>>>> eb0562031114ae97354f05b2289eed62aa7a791f
+
                 <td class="align-middle text-center">
                   <div class="progress-wrapper w-75 mx-auto">
                     <div class="progress-info">
@@ -98,11 +98,11 @@
                       </div>
                     </div>
                     <div class="progress">
-                      <div class="progress-bar bg-gradient-info" style="width: <?php echo e($enrollment->progress); ?>%"></div>
+                      <div class="progress-bar bg-gradient-info" style="<?php echo 'width: ' . $enrollment->progress . '%;'; ?>"></div>
                     </div>
                   </div>
                 </td>
-<<<<<<< HEAD
+
                 <td class="align-middle text-center">
                   <span class="text-secondary text-xs font-weight-bold"><?php echo e($enrollment->enrollment_date->format('d M Y')); ?></span>
                 </td>
@@ -117,7 +117,7 @@
                       <option value="completed" <?php echo e($enrollment->status == 'completed' ? 'selected' : ''); ?>>Completed</option>
                     </select>
                   </form>
-=======
+
                 <td class="align-middle text-center text-sm">
                   <?php if($enrollment->final_score !== null): ?>
                     <span class="text-xs font-weight-bold"><?php echo e(number_format($enrollment->final_score, 2)); ?></span>
@@ -138,16 +138,16 @@
                 </td>
                 <td class="align-middle">
                   <button type="button" class="btn btn-xs btn-primary" data-bs-toggle="modal" data-bs-target="#updateModal<?php echo e($enrollment->id); ?>">Edit</button>
->>>>>>> eb0562031114ae97354f05b2289eed62aa7a791f
+
                 </td>
               </tr>
               <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
               <tr>
-<<<<<<< HEAD
+
                 <td colspan="6" class="text-center">Tidak ada pendaftaran</td>
-=======
+
                 <td colspan="8" class="text-center">Tidak ada pendaftaran</td>
->>>>>>> eb0562031114ae97354f05b2289eed62aa7a791f
+
               </tr>
               <?php endif; ?>
             </tbody>
@@ -161,8 +161,8 @@
     </div>
   </div>
 </div>
-<<<<<<< HEAD
-=======
+
+
 
 <!-- Payment Verification Modal -->
 <?php $__currentLoopData = $enrollments; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $enrollment): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
@@ -259,7 +259,7 @@
   </div>
 </div>
 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
->>>>>>> eb0562031114ae97354f05b2289eed62aa7a791f
+
 <?php $__env->stopSection(); ?>
 
 

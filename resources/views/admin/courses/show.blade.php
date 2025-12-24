@@ -31,10 +31,10 @@
             <p><strong>Tanggal Mulai:</strong> {{ $course->start_date->format('d M Y') }}</p>
             <p><strong>Tanggal Selesai:</strong> {{ $course->end_date->format('d M Y') }}</p>
             <p><strong>Harga:</strong> Rp {{ number_format($course->price, 0, ',', '.') }}</p>
-<<<<<<< HEAD
-=======
+
+
             <p><strong>Nilai Minimum Kelulusan:</strong> {{ $course->passing_score ?? 70 }}%</p>
->>>>>>> eb0562031114ae97354f05b2289eed62aa7a791f
+
             <p><strong>Peserta:</strong> {{ $course->enrollments()->where('status', 'approved')->count() }}/{{ $course->max_participants }}</p>
           </div>
         </div>

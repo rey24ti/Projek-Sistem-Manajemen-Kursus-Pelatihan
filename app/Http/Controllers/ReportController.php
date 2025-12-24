@@ -6,6 +6,7 @@ use App\Models\Course;
 use App\Models\Enrollment;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ReportController extends Controller
 {
@@ -15,10 +16,6 @@ class ReportController extends Controller
             'total_courses' => Course::count(),
             'total_enrollments' => Enrollment::count(),
             'total_users' => User::where('role', 'guest')->count(),
-<<<<<<< HEAD
-            'active_courses' => Course::where('status', 'ongoing')->count(),
-            'completed_courses' => Course::where('status', 'completed')->count(),
-=======
             'total_staff' => User::where('role', 'staff')->count(),
             'active_courses' => Course::where('status', 'ongoing')->count(),
             'completed_courses' => Course::where('status', 'completed')->count(),
@@ -30,45 +27,43 @@ class ReportController extends Controller
             'passed_students' => Enrollment::where('is_passed', true)->count(),
             'failed_students' => Enrollment::where('is_passed', false)
                 ->whereNotNull('final_score')->count(),
->>>>>>> eb0562031114ae97354f05b2289eed62aa7a791f
         ];
 
         // For staff, only show their courses stats
-        if (auth()->user()->isStaff()) {
-            $stats['total_courses'] = Course::where('trainer_id', auth()->id())->count();
-            $stats['total_enrollments'] = Enrollment::whereHas('course', function($q) {
-                $q->where('trainer_id', auth()->id());
+        /** @var User|null $user */
+        $user = Auth::user();
+        if ($user && $user->isStaff()) {
+            $stats['total_courses'] = Course::where('trainer_id', $user->id)->count();
+            $stats['total_enrollments'] = Enrollment::whereHas('course', function($q) use ($user) {
+                $q->where('trainer_id', $user->id);
             })->count();
-            $stats['active_courses'] = Course::where('trainer_id', auth()->id())
+            $stats['active_courses'] = Course::where('trainer_id', $user->id)
                 ->where('status', 'ongoing')->count();
-            $stats['completed_courses'] = Course::where('trainer_id', auth()->id())
+            $stats['completed_courses'] = Course::where('trainer_id', $user->id)
                 ->where('status', 'completed')->count();
-<<<<<<< HEAD
-=======
             $stats['total_participants'] = Enrollment::where('status', 'approved')
-                ->whereHas('course', function($q) {
-                    $q->where('trainer_id', auth()->id());
+                ->whereHas('course', function($q) use ($user) {
+                    $q->where('trainer_id', $user->id);
                 })->count();
             $stats['total_revenue'] = Enrollment::where('payment_status', 'verified')
-                ->whereHas('course', function($q) {
-                    $q->where('trainer_id', auth()->id());
+                ->whereHas('course', function($q) use ($user) {
+                    $q->where('trainer_id', $user->id);
                 })
                 ->join('courses', 'enrollments.course_id', '=', 'courses.id')
                 ->sum('courses.price');
             $stats['pending_payments'] = Enrollment::where('payment_status', 'pending')
-                ->whereHas('course', function($q) {
-                    $q->where('trainer_id', auth()->id());
+                ->whereHas('course', function($q) use ($user) {
+                    $q->where('trainer_id', $user->id);
                 })->count();
             $stats['passed_students'] = Enrollment::where('is_passed', true)
-                ->whereHas('course', function($q) {
-                    $q->where('trainer_id', auth()->id());
+                ->whereHas('course', function($q) use ($user) {
+                    $q->where('trainer_id', $user->id);
                 })->count();
             $stats['failed_students'] = Enrollment::where('is_passed', false)
                 ->whereNotNull('final_score')
-                ->whereHas('course', function($q) {
-                    $q->where('trainer_id', auth()->id());
+                ->whereHas('course', function($q) use ($user) {
+                    $q->where('trainer_id', $user->id);
                 })->count();
->>>>>>> eb0562031114ae97354f05b2289eed62aa7a791f
         }
 
         // Recent enrollments
@@ -78,22 +73,15 @@ class ReportController extends Controller
             ->get();
 
         // For staff, filter by their courses
-        if (auth()->user()->isStaff()) {
-            $recentEnrollments = Enrollment::whereHas('course', function($q) {
-                $q->where('trainer_id', auth()->id());
+        if ($user && $user->isStaff()) {
+            $recentEnrollments = Enrollment::whereHas('course', function($q) use ($user) {
+                $q->where('trainer_id', $user->id);
             })->with(['user', 'course'])
             ->orderBy('created_at', 'desc')
             ->limit(10)
             ->get();
         }
 
-<<<<<<< HEAD
-        // Course completion rates
-        $courses = Course::withCount(['enrollments as total_enrollments', 
-            'enrollments as completed_enrollments' => function($q) {
-                $q->where('status', 'completed');
-            }])
-=======
         // Course completion rates with progress and graduation stats
         $courses = Course::withCount([
                 'enrollments as total_enrollments',
@@ -108,20 +96,20 @@ class ReportController extends Controller
                 }
             ])
             ->withAvg('enrollments as avg_progress', 'progress')
->>>>>>> eb0562031114ae97354f05b2289eed62aa7a791f
+
             ->orderBy('created_at', 'desc')
             ->limit(10)
             ->get();
 
         // For staff, filter by their courses
-        if (auth()->user()->isStaff()) {
-            $courses = Course::where('trainer_id', auth()->id())
-<<<<<<< HEAD
+        if ($user && $user->isStaff()) {
+            $courses = Course::where('trainer_id', $user->id)
+
                 ->withCount(['enrollments as total_enrollments', 
                     'enrollments as completed_enrollments' => function($q) {
                         $q->where('status', 'completed');
                     }])
-=======
+
                 ->withCount([
                     'enrollments as total_enrollments',
                     'enrollments as completed_enrollments' => function($q) {
@@ -135,23 +123,18 @@ class ReportController extends Controller
                     }
                 ])
                 ->withAvg('enrollments as avg_progress', 'progress')
->>>>>>> eb0562031114ae97354f05b2289eed62aa7a791f
+
                 ->orderBy('created_at', 'desc')
                 ->limit(10)
                 ->get();
         }
 
-<<<<<<< HEAD
-        $view = auth()->user()->isAdmin() ? 'admin.reports.index' : 'staff.reports.index';
-
-        return view($view, compact('stats', 'recentEnrollments', 'courses'));
-=======
         // Progress statistics
-        $progressQuery = function() {
+        $progressQuery = function() use (&$user) {
             $query = Enrollment::query();
-            if (auth()->user()->isStaff()) {
-                $query->whereHas('course', function($q) {
-                    $q->where('trainer_id', auth()->id());
+            if ($user && $user->isStaff()) {
+                $query->whereHas('course', function($q) use ($user) {
+                    $q->where('trainer_id', $user->id);
                 });
             }
             return $query;
@@ -165,11 +148,11 @@ class ReportController extends Controller
         ];
 
         // Graduation statistics
-        $graduationQuery = function() {
+        $graduationQuery = function() use (&$user) {
             $query = Enrollment::query();
-            if (auth()->user()->isStaff()) {
-                $query->whereHas('course', function($q) {
-                    $q->where('trainer_id', auth()->id());
+            if ($user && $user->isStaff()) {
+                $query->whereHas('course', function($q) use ($user) {
+                    $q->where('trainer_id', $user->id);
                 });
             }
             return $query;
@@ -195,42 +178,43 @@ class ReportController extends Controller
         ];
 
         // For staff, filter financial stats
-        if (auth()->user()->isStaff()) {
+        if ($user && $user->isStaff()) {
             $financialStats['pending_revenue'] = Enrollment::where('payment_status', 'pending')
-                ->whereHas('course', function($q) {
-                    $q->where('trainer_id', auth()->id());
+                ->whereHas('course', function($q) use ($user) {
+                    $q->where('trainer_id', $user->id);
                 })
                 ->join('courses', 'enrollments.course_id', '=', 'courses.id')
                 ->sum('courses.price');
             $financialStats['verified_payments'] = Enrollment::where('payment_status', 'verified')
-                ->whereHas('course', function($q) {
-                    $q->where('trainer_id', auth()->id());
+                ->whereHas('course', function($q) use ($user) {
+                    $q->where('trainer_id', $user->id);
                 })->count();
             $financialStats['pending_payments'] = Enrollment::where('payment_status', 'pending')
-                ->whereHas('course', function($q) {
-                    $q->where('trainer_id', auth()->id());
+                ->whereHas('course', function($q) use ($user) {
+                    $q->where('trainer_id', $user->id);
                 })->count();
         }
 
         // Instructor activity (only for admin)
         $instructorActivity = [];
-        if (auth()->user()->isAdmin()) {
+        if ($user && $user->isAdmin()) {
+            // Fetch top staff by course count then compute additional metrics in PHP to avoid fragile SQL joins in withCount
             $instructorActivity = User::where('role', 'staff')
                 ->withCount('courses')
-                ->withCount(['courses as active_courses_count' => function($q) {
-                    $q->where('status', 'ongoing');
-                }])
-                ->withCount(['courses as enrollments_count' => function($q) {
-                    $q->join('enrollments', 'courses.id', '=', 'enrollments.course_id');
-                }])
                 ->orderBy('courses_count', 'desc')
                 ->limit(10)
-                ->get();
+                ->get()
+                ->map(function($u) {
+                    $u->active_courses_count = $u->courses()->where('status', 'ongoing')->count();
+                    $u->enrollments_count = Enrollment::whereHas('course', function($q) use ($u) {
+                        $q->where('trainer_id', $u->id);
+                    })->count();
+                    return $u;
+                });
         }
 
-        $view = auth()->user()->isAdmin() ? 'admin.reports.index' : 'staff.reports.index';
+        $view = ($user && $user->isAdmin()) ? 'admin.reports.index' : 'staff.reports.index';
 
         return view($view, compact('stats', 'recentEnrollments', 'courses', 'progressStats', 'graduationStats', 'financialStats', 'instructorActivity'));
->>>>>>> eb0562031114ae97354f05b2289eed62aa7a791f
     }
 }

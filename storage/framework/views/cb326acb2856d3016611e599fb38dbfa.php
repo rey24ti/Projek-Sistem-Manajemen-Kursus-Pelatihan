@@ -1,3 +1,5 @@
+
+
 <?php $__env->startSection('auth'); ?>
 
 
@@ -50,13 +52,11 @@
             </main>
         <?php endif; ?>
 
-        
-        <?php if(View::exists('components.fixed-plugin')): ?>
-            <?php echo $__env->make('components.fixed-plugin', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
-        <?php endif; ?>
+
     <?php endif; ?>
 
     
 
 <?php $__env->stopSection(); ?>
+
 <?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\BPF_PIDOO\laragon-6.0-minimal\www\Projek-Sistem-Manajemen-Kursus-Pelatihan\resources\views/layouts/user_type/auth.blade.php ENDPATH**/ ?>

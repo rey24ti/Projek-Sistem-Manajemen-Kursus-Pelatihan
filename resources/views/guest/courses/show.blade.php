@@ -13,7 +13,7 @@
       <div class="card-body">
         @if($course->image)
         <div class="mb-3">
-<<<<<<< HEAD
+
           <img src="{{ Storage::url($course->image) }}" alt="{{ $course->title }}" class="img-fluid" style="max-height: 300px;">
         </div>
         @endif
@@ -42,7 +42,7 @@
             <input type="hidden" name="course_id" value="{{ $course->id }}">
             <button type="submit" class="btn btn-primary">Daftar Sekarang</button>
           </form>
-=======
+
           <img src="{{ Storage::url($course->image) }}" alt="{{ $course->title }}" class="img-fluid rounded" style="max-height: 400px; width: 100%; object-fit: cover;">
         </div>
         @endif
@@ -208,14 +208,14 @@
             @endif
           </div>
         </div>
->>>>>>> eb0562031114ae97354f05b2289eed62aa7a791f
+
         @endif
       </div>
     </div>
   </div>
 </div>
 @endsection
-<<<<<<< HEAD
 
-=======
->>>>>>> eb0562031114ae97354f05b2289eed62aa7a791f
+
+
+

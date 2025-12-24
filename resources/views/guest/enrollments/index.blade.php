@@ -14,16 +14,10 @@
               <tr>
                 <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Kursus</th>
                 <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status</th>
-<<<<<<< HEAD
-                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Progress</th>
-                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Tanggal Daftar</th>
-                <th class="text-secondary opacity-7"></th>
-=======
                 <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Pembayaran</th>
                 <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Progress</th>
                 <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Nilai</th>
                 <th class="text-secondary opacity-7">Aksi</th>
->>>>>>> eb0562031114ae97354f05b2289eed62aa7a791f
               </tr>
             </thead>
             <tbody>
@@ -40,8 +34,6 @@
                 <td class="align-middle text-center text-sm">
                   <span class="badge badge-sm bg-gradient-{{ $enrollment->status_badge }}">{{ ucfirst($enrollment->status) }}</span>
                 </td>
-<<<<<<< HEAD
-=======
                 <td class="align-middle text-center text-sm">
                   @if($enrollment->payment_status)
                     <span class="badge badge-sm bg-gradient-{{ $enrollment->payment_status_badge }}">{{ ucfirst($enrollment->payment_status) }}</span>
@@ -52,7 +44,6 @@
                     <span class="text-secondary text-xs">-</span>
                   @endif
                 </td>
->>>>>>> eb0562031114ae97354f05b2289eed62aa7a791f
                 <td class="align-middle text-center">
                   <div class="progress-wrapper w-75 mx-auto">
                     <div class="progress-info">
@@ -61,17 +52,10 @@
                       </div>
                     </div>
                     <div class="progress">
-                      <div class="progress-bar bg-gradient-info" style="width: {{ $enrollment->progress }}%"></div>
+                      <div class="progress-bar bg-gradient-info" style="<?php echo 'width: ' . $enrollment->progress . '%;'; ?>"></div>
                     </div>
                   </div>
                 </td>
-<<<<<<< HEAD
-                <td class="align-middle text-center">
-                  <span class="text-secondary text-xs font-weight-bold">{{ $enrollment->enrollment_date->format('d M Y') }}</span>
-                </td>
-                <td class="align-middle">
-                  <a href="{{ route('courses.show', $enrollment->course) }}" class="text-info font-weight-bold text-xs">Lihat Kursus</a>
-=======
                 <td class="align-middle text-center text-sm">
                   @if($enrollment->final_score !== null)
                     <span class="text-xs font-weight-bold">{{ number_format($enrollment->final_score, 2) }}</span>
@@ -95,16 +79,11 @@
                       @endif
                     @endif
                   </div>
->>>>>>> eb0562031114ae97354f05b2289eed62aa7a791f
                 </td>
               </tr>
               @empty
               <tr>
-<<<<<<< HEAD
-                <td colspan="5" class="text-center">Anda belum terdaftar pada kursus apapun</td>
-=======
                 <td colspan="6" class="text-center">Anda belum terdaftar pada kursus apapun</td>
->>>>>>> eb0562031114ae97354f05b2289eed62aa7a791f
               </tr>
               @endforelse
             </tbody>

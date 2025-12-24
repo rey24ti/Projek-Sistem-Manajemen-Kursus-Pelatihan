@@ -15,11 +15,8 @@ class CourseMaterial extends Model
         'file_name',
         'file_type',
         'file_size',
-<<<<<<< HEAD
-=======
         'video_url',
         'material_type',
->>>>>>> eb0562031114ae97354f05b2289eed62aa7a791f
         'order',
     ];
 

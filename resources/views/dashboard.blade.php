@@ -2,7 +2,7 @@
 
 @section('content')
 
-@if(auth()->user()->isAdmin() || auth()->user()->isStaff())
+@if(auth()->check() && (auth()->user()->isAdmin() || auth()->user()->isStaff()))
   <div class="row">
     <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
       <div class="card">
@@ -12,7 +12,7 @@
               <div class="numbers">
                 <p class="text-sm mb-0 text-capitalize font-weight-bold">Total Kursus</p>
                 <h5 class="font-weight-bolder mb-0">
-                  {{ \App\Models\Course::when(auth()->user()->isStaff(), fn($q) => $q->where('trainer_id', auth()->id()))->count() }}
+                  {{ \App\Models\Course::when(auth()->check() && auth()->user()->isStaff(), fn($q) => $q->where('trainer_id', auth()->id()))->count() }}
                 </h5>
               </div>
             </div>
@@ -33,7 +33,7 @@
               <div class="numbers">
                 <p class="text-sm mb-0 text-capitalize font-weight-bold">Total Pendaftaran</p>
                 <h5 class="font-weight-bolder mb-0">
-                  {{ \App\Models\Enrollment::when(auth()->user()->isStaff(), fn($q) => $q->whereHas('course', fn($c) => $c->where('trainer_id', auth()->id())))->count() }}
+                  {{ \App\Models\Enrollment::when(auth()->check() && auth()->user()->isStaff(), fn($q) => $q->whereHas('course', fn($c) => $c->where('trainer_id', auth()->id())))->count() }}
                 </h5>
               </div>
             </div>
@@ -54,7 +54,7 @@
               <div class="numbers">
                 <p class="text-sm mb-0 text-capitalize font-weight-bold">Kursus Aktif</p>
                 <h5 class="font-weight-bolder mb-0">
-                  {{ \App\Models\Course::where('status', 'ongoing')->when(auth()->user()->isStaff(), fn($q) => $q->where('trainer_id', auth()->id()))->count() }}
+                  {{ \App\Models\Course::where('status', 'ongoing')->when(auth()->check() && auth()->user()->isStaff(), fn($q) => $q->where('trainer_id', auth()->id()))->count() }}
                 </h5>
               </div>
             </div>
@@ -75,7 +75,7 @@
               <div class="numbers">
                 <p class="text-sm mb-0 text-capitalize font-weight-bold">Kursus Selesai</p>
                 <h5 class="font-weight-bolder mb-0">
-                  {{ \App\Models\Course::where('status', 'completed')->when(auth()->user()->isStaff(), fn($q) => $q->where('trainer_id', auth()->id()))->count() }}
+                  {{ \App\Models\Course::where('status', 'completed')->when(auth()->check() && auth()->user()->isStaff(), fn($q) => $q->where('trainer_id', auth()->id()))->count() }}
                 </h5>
               </div>
             </div>

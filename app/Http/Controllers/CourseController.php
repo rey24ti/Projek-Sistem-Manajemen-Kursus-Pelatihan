@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 
 class CourseController extends Controller
 {
@@ -36,14 +37,16 @@ class CourseController extends Controller
             $query->where('status', $request->status);
         }
 
-        if (auth()->check()) {
+        /** @var User|null $user */
+        $user = Auth::user();
+        if ($user) {
             // For staff, only show their courses
-            if (auth()->user()->isStaff()) {
-                $query->where('trainer_id', auth()->id());
+            if ($user->isStaff()) {
+                $query->where('trainer_id', $user->id);
             }
 
             // For logged-in guest, only show open courses
-            if (auth()->user()->isGuest()) {
+            if ($user->isGuest()) {
                 $query->where('status', 'open');
             }
         } else {
@@ -55,70 +58,78 @@ class CourseController extends Controller
         $categories = Category::all();
 
         // Tentukan view berdasarkan role / status login
-        if (! auth()->check()) {
+        if (! Auth::check()) {
             $view = 'guest.courses.index';
         } else {
-            $view = auth()->user()->isAdmin()
-                ? 'admin.courses.index'
-                : (auth()->user()->isStaff()
-                    ? 'staff.courses.index'
-                    : 'guest.courses.index');
+            /** @var User $user */
+            $user = Auth::user();
+
+            if ($user->isAdmin()) {
+                $view = 'admin.courses.index';
+            } elseif ($user->isStaff()) {
+                $view = 'staff.courses.index';
+            } elseif ($user->isGuest()) {
+                // logged-in guest sees the auth-specific guest view
+                $view = 'guest.courses.auth_index';
+            } else {
+                $view = 'guest.courses.index';
+            }
         }
 
         return view($view, compact('courses', 'categories'));
     }
 
+    protected function validationRules(): array
+    {
+        return [
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'category_id' => 'required|exists:categories,id',
+            'trainer_id' => 'required|exists:users,id',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after:start_date',
+            'max_participants' => 'required|integer|min:1',
+            'status' => 'required|in:draft,open,ongoing,completed,cancelled',
+            'price' => 'required|numeric|min:0',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'passing_score' => 'required|integer|min:0|max:100',
+        ];
+    }
+
     public function create()
     {
+        /** @var User|null $user */
+        $user = Auth::user();
         $categories = Category::all();
 
-        $trainers = User::whereIn('role', ['admin', 'staff'])->get();
-        return view('admin.courses.create', compact('categories', 'trainers'));
-
-        // For staff, they can only assign themselves as trainer
-        if (auth()->user()->isStaff()) {
-            $trainers = collect([auth()->user()]);
+        if ($user && $user->isStaff()) {
+            $trainers = collect([$user]);
             $view     = 'staff.courses.create';
         } else {
-            // Admin can assign any trainer
             $trainers = User::whereIn('role', ['admin', 'staff'])->get();
             $view     = 'admin.courses.create';
         }
 
         return view($view, compact('categories', 'trainers'));
-
     }
 
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'title'            => 'required|string|max:255',
-            'description'      => 'required|string',
-            'category_id'      => 'required|exists:categories,id',
-            'trainer_id'       => 'required|exists:users,id',
-            'start_date'       => 'required|date',
-            'end_date'         => 'required|date|after:start_date',
-            'max_participants' => 'required|integer|min:1',
-            'status'           => 'required|in:draft,open,ongoing,completed,cancelled',
-            'price'            => 'required|numeric|min:0',
-
-            'image'            => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-
-            'passing_score'    => 'required|integer|min:0|max:100',
-            'image'            => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ], [], [
+        $rules = $this->validationRules();
+        $validator = Validator::make($request->all(), $rules, [], [
             'passing_score' => 'nilai minimum kelulusan',
-
         ]);
 
         if ($validator->fails()) {
             return back()->withErrors($validator)->withInput();
         }
 
-        $data = $request->all();
+        $data = $validator->validated();
 
         // For staff, ensure they can only create courses for themselves
-        if (auth()->user()->isStaff() && $data['trainer_id'] != auth()->id()) {
+        /** @var User|null $user */
+        $user = Auth::user();
+        if ($user && $user->isStaff() && $data['trainer_id'] != $user->id) {
             return back()->with('error', 'Anda hanya dapat membuat kursus untuk diri sendiri.');
         }
 
@@ -134,27 +145,26 @@ class CourseController extends Controller
 
     public function show(Course $course)
     {
-
-        $course->load(['category', 'trainer', 'enrollments.user', 'materials']);
-
+        /** @var User|null $user */
+        $user = Auth::user();
         $course->load(['category', 'trainer', 'enrollments.user', 'materials', 'assignments', 'quizzes']);
 
         // Check if user is enrolled
         $isEnrolled = false;
-        if (auth()->check()) {
+        if ($user) {
             $isEnrolled = $course->enrollments()
-                ->where('user_id', auth()->id())
+                ->where('user_id', $user->id)
                 ->exists();
         }
 
-        if (! auth()->check()) {
+        if (! $user) {
             $view = 'guest.courses.show';
+        } else if ($user->isAdmin()) {
+            $view = 'admin.courses.show';
+        } else if ($user->isStaff()) {
+            $view = 'staff.courses.show';
         } else {
-            $view = auth()->user()->isAdmin()
-                ? 'admin.courses.show'
-                : (auth()->user()->isStaff()
-                    ? 'staff.courses.show'
-                    : 'guest.courses.show');
+            $view = 'guest.courses.show';
         }
 
         return view($view, compact('course', 'isEnrolled'));
@@ -162,65 +172,50 @@ class CourseController extends Controller
 
     public function edit(Course $course)
     {
+        /** @var User|null $user */
+        $user = Auth::user();
 
-        $categories = Category::all();
-        $trainers   = User::whereIn('role', ['admin', 'staff'])->get();
-        return view('admin.courses.edit', compact('course', 'categories', 'trainers'));
-
-        // Check if staff can only edit their own courses
-        if (auth()->user()->isStaff() && $course->trainer_id != auth()->id()) {
+        // Permission: staff can edit only their own courses
+        if ($user && $user->isStaff() && $course->trainer_id != $user->id) {
             abort(403, 'Anda tidak memiliki akses untuk mengedit kursus ini.');
         }
 
         $categories = Category::all();
 
-        // For staff, they can only assign themselves as trainer
-        if (auth()->user()->isStaff()) {
-            $trainers = collect([auth()->user()]);
-            $view     = 'staff.courses.edit';
+        if ($user && $user->isStaff()) {
+            $trainers = collect([$user]);
+            $view = 'staff.courses.edit';
         } else {
             $trainers = User::whereIn('role', ['admin', 'staff'])->get();
-            $view     = 'admin.courses.edit';
+            $view = 'admin.courses.edit';
         }
 
         return view($view, compact('course', 'categories', 'trainers'));
-
     }
 
     public function update(Request $request, Course $course)
     {
+        /** @var User|null $user */
+        $user = Auth::user();
 
-        // Check if staff can only edit their own courses
-        if (auth()->user()->isStaff() && $course->trainer_id != auth()->id()) {
+        // Permission: staff can only edit their own courses
+        if ($user && $user->isStaff() && $course->trainer_id != $user->id) {
             abort(403, 'Anda tidak memiliki akses untuk mengedit kursus ini.');
         }
 
-        $validator = Validator::make($request->all(), [
-            'title'            => 'required|string|max:255',
-            'description'      => 'required|string',
-            'category_id'      => 'required|exists:categories,id',
-            'trainer_id'       => 'required|exists:users,id',
-            'start_date'       => 'required|date',
-            'end_date'         => 'required|date|after:start_date',
-            'max_participants' => 'required|integer|min:1',
-            'status'           => 'required|in:draft,open,ongoing,completed,cancelled',
-            'price'            => 'required|numeric|min:0',
-            'image'            => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'passing_score'    => 'required|integer|min:0|max:100',
-            'image'            => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ], [], [
+        $rules = $this->validationRules();
+        $validator = Validator::make($request->all(), $rules, [], [
             'passing_score' => 'nilai minimum kelulusan',
-
         ]);
 
         if ($validator->fails()) {
             return back()->withErrors($validator)->withInput();
         }
 
-        $data = $request->all();
+        $data = $validator->validated();
 
         // For staff, ensure they can only assign themselves as trainer
-        if (auth()->user()->isStaff() && $data['trainer_id'] != auth()->id()) {
+        if ($user && $user->isStaff() && $data['trainer_id'] != $user->id) {
             return back()->with('error', 'Anda hanya dapat mengassign diri sendiri sebagai trainer.');
         }
 
@@ -229,6 +224,11 @@ class CourseController extends Controller
                 Storage::disk('public')->delete($course->image);
             }
             $data['image'] = $request->file('image')->store('courses', 'public');
+        } elseif ($request->boolean('remove_image')) {
+            if ($course->image) {
+                Storage::disk('public')->delete($course->image);
+            }
+            $data['image'] = null;
         }
 
         $course->update($data);
@@ -241,7 +241,9 @@ class CourseController extends Controller
     {
 
         // Check if staff can only delete their own courses
-        if (auth()->user()->isStaff() && $course->trainer_id != auth()->id()) {
+        /** @var User|null $user */
+        $user = Auth::user();
+        if ($user && $user->isStaff() && $course->trainer_id != $user->id) {
             abort(403, 'Anda tidak memiliki akses untuk menghapus kursus ini.');
         }
 

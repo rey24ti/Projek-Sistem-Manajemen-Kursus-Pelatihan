@@ -96,8 +96,8 @@
               @enderror
             </div>
           </div>
-<<<<<<< HEAD
-=======
+
+
           <div class="row">
             <div class="col-md-6 mb-3">
               <label class="form-label">Nilai Minimum Kelulusan (0-100)</label>
@@ -108,7 +108,7 @@
               @enderror
             </div>
           </div>
->>>>>>> eb0562031114ae97354f05b2289eed62aa7a791f
+
           <div class="mb-3">
             <label class="form-label">Gambar</label>
             @if($course->image)

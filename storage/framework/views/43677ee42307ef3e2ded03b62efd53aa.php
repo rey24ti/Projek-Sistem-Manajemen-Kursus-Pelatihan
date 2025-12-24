@@ -52,7 +52,7 @@
                       </div>
                     </div>
                     <div class="progress">
-                      <div class="progress-bar bg-gradient-info" style="width: <?php echo e($enrollment->progress); ?>%"></div>
+                      <div class="progress-bar bg-gradient-info" style="<?php echo 'width: ' . $enrollment->progress . '%;'; ?>"></div>
                     </div>
                   </div>
                 </td>

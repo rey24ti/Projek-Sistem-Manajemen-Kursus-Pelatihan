@@ -5,16 +5,16 @@
   <div class="col-12">
     <div class="card mb-4">
       <div class="card-header pb-0">
-<<<<<<< HEAD
+
         <h6>Laporan</h6>
       </div>
       <div class="card-body">
-=======
+
         <h6>Laporan Sistem</h6>
       </div>
       <div class="card-body">
         <!-- Overview Stats -->
->>>>>>> eb0562031114ae97354f05b2289eed62aa7a791f
+
         <div class="row mb-4">
           <div class="col-md-3">
             <div class="card">
@@ -35,36 +35,36 @@
           <div class="col-md-3">
             <div class="card">
               <div class="card-body">
-<<<<<<< HEAD
+
                 <h6 class="text-sm mb-0">Kursus Aktif</h6>
                 <h3 class="mb-0">{{ $stats['active_courses'] }}</h3>
-=======
+
                 <h6 class="text-sm mb-0">Total Peserta</h6>
                 <h3 class="mb-0">{{ $stats['total_users'] }}</h3>
->>>>>>> eb0562031114ae97354f05b2289eed62aa7a791f
+
               </div>
             </div>
           </div>
           <div class="col-md-3">
             <div class="card">
               <div class="card-body">
-<<<<<<< HEAD
+
                 <h6 class="text-sm mb-0">Kursus Selesai</h6>
                 <h3 class="mb-0">{{ $stats['completed_courses'] }}</h3>
-=======
+
                 <h6 class="text-sm mb-0">Kursus Aktif</h6>
                 <h3 class="mb-0">{{ $stats['active_courses'] }}</h3>
->>>>>>> eb0562031114ae97354f05b2289eed62aa7a791f
+
               </div>
             </div>
           </div>
         </div>
-<<<<<<< HEAD
+
         <div class="row">
           <div class="col-md-6">
             <div class="card">
               <div class="card-header">
-=======
+
 
         <!-- Financial Stats -->
         <div class="row mb-4">
@@ -225,7 +225,7 @@
         </div>
 
         <!-- Instructor Activity (Admin Only) -->
-        @if(auth()->user()->isAdmin() && isset($instructorActivity))
+        @if(auth()->check() && auth()->user()->isAdmin() && isset($instructorActivity))
         <div class="row mb-4">
           <div class="col-12">
             <div class="card">
@@ -275,7 +275,7 @@
           <div class="col-12">
             <div class="card">
               <div class="card-header">
->>>>>>> eb0562031114ae97354f05b2289eed62aa7a791f
+
                 <h6>Pendaftaran Terbaru</h6>
               </div>
               <div class="card-body">
@@ -283,23 +283,23 @@
                   <table class="table align-items-center mb-0">
                     <thead>
                       <tr>
-<<<<<<< HEAD
+
                         <th>Peserta</th>
                         <th>Kursus</th>
                         <th>Status</th>
-=======
+
                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Peserta</th>
                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Kursus</th>
                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status</th>
                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Pembayaran</th>
                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Progres</th>
->>>>>>> eb0562031114ae97354f05b2289eed62aa7a791f
+
                       </tr>
                     </thead>
                     <tbody>
                       @foreach($recentEnrollments as $enrollment)
                       <tr>
-<<<<<<< HEAD
+
                         <td>{{ $enrollment->user->name }}</td>
                         <td>{{ $enrollment->course->title }}</td>
                         <td><span class="badge bg-gradient-{{ $enrollment->status_badge }}">{{ ucfirst($enrollment->status) }}</span></td>
@@ -332,24 +332,6 @@
                         <td>{{ $course->title }}</td>
                         <td>{{ $course->total_enrollments }}</td>
                         <td>{{ $course->completed_enrollments }}</td>
-=======
-                        <td>
-                          <h6 class="mb-0 text-sm">{{ $enrollment->user->name }}</h6>
-                          <p class="text-xs text-secondary mb-0">{{ $enrollment->user->email }}</p>
-                        </td>
-                        <td>
-                          <p class="text-xs font-weight-bold mb-0">{{ $enrollment->course->title }}</p>
-                        </td>
-                        <td class="align-middle text-center text-sm">
-                          <span class="badge bg-gradient-{{ $enrollment->status_badge }}">{{ ucfirst($enrollment->status) }}</span>
-                        </td>
-                        <td class="align-middle text-center text-sm">
-                          <span class="badge bg-gradient-{{ $enrollment->payment_status_badge }}">{{ ucfirst($enrollment->payment_status) }}</span>
-                        </td>
-                        <td class="align-middle text-center text-sm">
-                          <span class="text-secondary text-xs font-weight-bold">{{ $enrollment->progress }}%</span>
-                        </td>
->>>>>>> eb0562031114ae97354f05b2289eed62aa7a791f
                       </tr>
                       @endforeach
                     </tbody>
@@ -364,7 +346,7 @@
   </div>
 </div>
 @endsection
-<<<<<<< HEAD
 
-=======
->>>>>>> eb0562031114ae97354f05b2289eed62aa7a791f
+
+
+
