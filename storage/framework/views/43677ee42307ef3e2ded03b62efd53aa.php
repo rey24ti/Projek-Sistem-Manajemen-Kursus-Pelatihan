@@ -40,6 +40,10 @@
                     <?php if($enrollment->payment_status == 'pending'): ?>
                       <br><small><a href="<?php echo e(route('payments.create', $enrollment)); ?>" class="text-warning">Upload Bukti</a></small>
                     <?php endif; ?>
+                    <?php $lastPayment = $enrollment->payments->last(); ?>
+                    <?php if($lastPayment): ?>
+                      <br><small><a href="<?php echo e(route('payments.show', $lastPayment)); ?>" class="text-info">Lihat Bukti</a></small>
+                    <?php endif; ?>
                   <?php else: ?>
                     <span class="text-secondary text-xs">-</span>
                   <?php endif; ?>

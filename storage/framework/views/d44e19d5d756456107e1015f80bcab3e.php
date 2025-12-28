@@ -15,32 +15,29 @@
             </div>
 
             <div class="col-md-4">
-
-            <div class="col-md-3">
-
-              <select name="status" class="form-control">
-                <option value="">Semua Status</option>
-                <option value="pending" <?php echo e(request('status') == 'pending' ? 'selected' : ''); ?>>Pending</option>
-                <option value="approved" <?php echo e(request('status') == 'approved' ? 'selected' : ''); ?>>Approved</option>
-                <option value="rejected" <?php echo e(request('status') == 'rejected' ? 'selected' : ''); ?>>Rejected</option>
-                <option value="completed" <?php echo e(request('status') == 'completed' ? 'selected' : ''); ?>>Completed</option>
-              </select>
+              <div class="d-flex align-items-center filters-group" style="gap: .5rem; margin-top: -10px;">
+                <div style="min-width:160px;">
+                  <select name="status" class="form-control form-control-sm">
+                    <option value="">Semua Status</option>
+                    <option value="pending" <?php echo e(request('status') == 'pending' ? 'selected' : ''); ?>>Pending</option>
+                    <option value="approved" <?php echo e(request('status') == 'approved' ? 'selected' : ''); ?>>Approved</option>
+                    <option value="rejected" <?php echo e(request('status') == 'rejected' ? 'selected' : ''); ?>>Rejected</option>
+                    <option value="completed" <?php echo e(request('status') == 'completed' ? 'selected' : ''); ?>>Completed</option>
+                  </select>
+                </div>
+                <div style="min-width:200px;">
+                  <select name="payment_status" class="form-control form-control-sm">
+                    <option value="">Semua Status Pembayaran</option>
+                    <option value="pending" <?php echo e(request('payment_status') == 'pending' ? 'selected' : ''); ?>>Pending</option>
+                    <option value="verified" <?php echo e(request('payment_status') == 'verified' ? 'selected' : ''); ?>>Verified</option>
+                    <option value="rejected" <?php echo e(request('payment_status') == 'rejected' ? 'selected' : ''); ?>>Rejected</option>
+                  </select>
+                </div>
+                <div>
+                  <button type="submit" class="btn btn-sm btn-primary" style="margin-top: 15px;">Filter</button>
+                </div>
+              </div>
             </div>
-
-
-            <div class="col-md-3">
-              <select name="payment_status" class="form-control">
-                <option value="">Semua Status Pembayaran</option>
-                <option value="pending" <?php echo e(request('payment_status') == 'pending' ? 'selected' : ''); ?>>Pending</option>
-                <option value="verified" <?php echo e(request('payment_status') == 'verified' ? 'selected' : ''); ?>>Verified</option>
-                <option value="rejected" <?php echo e(request('payment_status') == 'rejected' ? 'selected' : ''); ?>>Rejected</option>
-              </select>
-            </div>
-
-            <div class="col-md-2">
-              <button type="submit" class="btn btn-primary w-100">Filter</button>
-            </div>
-          </div>
         </form>
         <div class="table-responsive p-0">
           <table class="table align-items-center mb-0">
@@ -52,13 +49,10 @@
 
                 <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Progress</th>
                 <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Tanggal Daftar</th>
-                <th class="text-secondary opacity-7"></th>
 
                 <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Pembayaran</th>
-                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Progress</th>
                 <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Nilai</th>
-                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Kelulusan</th>
-                <th class="text-secondary opacity-7">Aksi</th>
+                <th class="text-center text-uppercase text-secondary text-xs font-weight-bolder opacity-7">Aksi</th>
 
               </tr>
             </thead>
@@ -80,16 +74,6 @@
                   <span class="badge badge-sm bg-gradient-<?php echo e($enrollment->status_badge); ?>"><?php echo e(ucfirst($enrollment->status)); ?></span>
                 </td>
 
-
-                <td class="align-middle text-center text-sm">
-                  <span class="badge badge-sm bg-gradient-<?php echo e($enrollment->payment_status_badge); ?>"><?php echo e(ucfirst($enrollment->payment_status)); ?></span>
-                  <?php if($enrollment->payment_status == 'pending'): ?>
-                  <div class="mt-1">
-                    <button type="button" class="btn btn-xs btn-success" data-bs-toggle="modal" data-bs-target="#paymentModal<?php echo e($enrollment->id); ?>">Verify</button>
-                  </div>
-                  <?php endif; ?>
-                </td>
-
                 <td class="align-middle text-center">
                   <div class="progress-wrapper w-75 mx-auto">
                     <div class="progress-info">
@@ -106,39 +90,31 @@
                 <td class="align-middle text-center">
                   <span class="text-secondary text-xs font-weight-bold"><?php echo e($enrollment->enrollment_date->format('d M Y')); ?></span>
                 </td>
-                <td class="align-middle">
-                  <form action="<?php echo e(route('enrollments.update', $enrollment)); ?>" method="POST" class="d-inline">
-                    <?php echo csrf_field(); ?>
-                    <?php echo method_field('PUT'); ?>
-                    <select name="status" class="form-control form-control-sm d-inline-block" style="width: auto;" onchange="this.form.submit()">
-                      <option value="pending" <?php echo e($enrollment->status == 'pending' ? 'selected' : ''); ?>>Pending</option>
-                      <option value="approved" <?php echo e($enrollment->status == 'approved' ? 'selected' : ''); ?>>Approved</option>
-                      <option value="rejected" <?php echo e($enrollment->status == 'rejected' ? 'selected' : ''); ?>>Rejected</option>
-                      <option value="completed" <?php echo e($enrollment->status == 'completed' ? 'selected' : ''); ?>>Completed</option>
-                    </select>
-                  </form>
+
+                <td class="align-middle text-center text-sm">
+                  <div class="d-flex flex-column align-items-center">
+                    <span class="badge badge-sm bg-gradient-<?php echo e($enrollment->payment_status_badge); ?>"><?php echo e(ucfirst($enrollment->payment_status)); ?></span>
+                    <div class="mt-2 d-flex gap-1">
+                      <?php if($enrollment->payment_status == 'pending'): ?>
+                      <button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#paymentModal<?php echo e($enrollment->id); ?>">Verify</button>
+                      <?php endif; ?>
+                      <?php $lastPayment = $enrollment->payments->last(); ?>
+                      <?php if($lastPayment): ?>
+                      <a href="<?php echo e(route('payments.show', $lastPayment)); ?>" class="btn btn-sm btn-info">Lihat Bukti</a>
+                      <?php endif; ?>
+                    </div>
+                  </div>
+                </td>
 
                 <td class="align-middle text-center text-sm">
                   <?php if($enrollment->final_score !== null): ?>
-                    <span class="text-xs font-weight-bold"><?php echo e(number_format($enrollment->final_score, 2)); ?></span>
+                  <span class="text-xs font-weight-bold"><?php echo e(number_format($enrollment->final_score, 2)); ?></span>
                   <?php else: ?>
-                    <span class="text-secondary text-xs">-</span>
+                  <span class="text-secondary text-xs">-</span>
                   <?php endif; ?>
                 </td>
-                <td class="align-middle text-center text-sm">
-                  <?php if($enrollment->final_score !== null): ?>
-                    <?php if($enrollment->is_passed): ?>
-                      <span class="badge badge-sm bg-gradient-success">Lulus</span>
-                    <?php else: ?>
-                      <span class="badge badge-sm bg-gradient-danger">Tidak Lulus</span>
-                    <?php endif; ?>
-                  <?php else: ?>
-                    <span class="text-secondary text-xs">-</span>
-                  <?php endif; ?>
-                </td>
-                <td class="align-middle">
-                  <button type="button" class="btn btn-xs btn-primary" data-bs-toggle="modal" data-bs-target="#updateModal<?php echo e($enrollment->id); ?>">Edit</button>
-
+                <td class="align-middle text-center">
+                  <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#updateModal<?php echo e($enrollment->id); ?>">Edit</button>
                 </td>
               </tr>
               <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
@@ -261,6 +237,4 @@
 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
 <?php $__env->stopSection(); ?>
-
-
 <?php echo $__env->make('layouts.user_type.auth', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\BPF_PIDOO\laragon-6.0-minimal\www\Projek-Sistem-Manajemen-Kursus-Pelatihan\resources\views/admin/enrollments/index.blade.php ENDPATH**/ ?>

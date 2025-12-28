@@ -15,32 +15,29 @@
             </div>
 
             <div class="col-md-4">
-
-            <div class="col-md-3">
-
-              <select name="status" class="form-control">
-                <option value="">Semua Status</option>
-                <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
-                <option value="approved" {{ request('status') == 'approved' ? 'selected' : '' }}>Approved</option>
-                <option value="rejected" {{ request('status') == 'rejected' ? 'selected' : '' }}>Rejected</option>
-                <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>Completed</option>
-              </select>
+              <div class="d-flex align-items-center filters-group" style="gap: .5rem; margin-top: -10px;">
+                <div style="min-width:160px;">
+                  <select name="status" class="form-control form-control-sm">
+                    <option value="">Semua Status</option>
+                    <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
+                    <option value="approved" {{ request('status') == 'approved' ? 'selected' : '' }}>Approved</option>
+                    <option value="rejected" {{ request('status') == 'rejected' ? 'selected' : '' }}>Rejected</option>
+                    <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>Completed</option>
+                  </select>
+                </div>
+                <div style="min-width:200px;">
+                  <select name="payment_status" class="form-control form-control-sm">
+                    <option value="">Semua Status Pembayaran</option>
+                    <option value="pending" {{ request('payment_status') == 'pending' ? 'selected' : '' }}>Pending</option>
+                    <option value="verified" {{ request('payment_status') == 'verified' ? 'selected' : '' }}>Verified</option>
+                    <option value="rejected" {{ request('payment_status') == 'rejected' ? 'selected' : '' }}>Rejected</option>
+                  </select>
+                </div>
+                <div>
+                  <button type="submit" class="btn btn-sm btn-primary" style="margin-top: 15px;">Filter</button>
+                </div>
+              </div>
             </div>
-
-
-            <div class="col-md-3">
-              <select name="payment_status" class="form-control">
-                <option value="">Semua Status Pembayaran</option>
-                <option value="pending" {{ request('payment_status') == 'pending' ? 'selected' : '' }}>Pending</option>
-                <option value="verified" {{ request('payment_status') == 'verified' ? 'selected' : '' }}>Verified</option>
-                <option value="rejected" {{ request('payment_status') == 'rejected' ? 'selected' : '' }}>Rejected</option>
-              </select>
-            </div>
-
-            <div class="col-md-2">
-              <button type="submit" class="btn btn-primary w-100">Filter</button>
-            </div>
-          </div>
         </form>
         <div class="table-responsive p-0">
           <table class="table align-items-center mb-0">
@@ -52,13 +49,10 @@
 
                 <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Progress</th>
                 <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Tanggal Daftar</th>
-                <th class="text-secondary opacity-7"></th>
 
                 <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Pembayaran</th>
-                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Progress</th>
                 <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Nilai</th>
-                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Kelulusan</th>
-                <th class="text-secondary opacity-7">Aksi</th>
+                <th class="text-center text-uppercase text-secondary text-xs font-weight-bolder opacity-7">Aksi</th>
 
               </tr>
             </thead>
@@ -80,16 +74,6 @@
                   <span class="badge badge-sm bg-gradient-{{ $enrollment->status_badge }}">{{ ucfirst($enrollment->status) }}</span>
                 </td>
 
-
-                <td class="align-middle text-center text-sm">
-                  <span class="badge badge-sm bg-gradient-{{ $enrollment->payment_status_badge }}">{{ ucfirst($enrollment->payment_status) }}</span>
-                  @if($enrollment->payment_status == 'pending')
-                  <div class="mt-1">
-                    <button type="button" class="btn btn-xs btn-success" data-bs-toggle="modal" data-bs-target="#paymentModal{{ $enrollment->id }}">Verify</button>
-                  </div>
-                  @endif
-                </td>
-
                 <td class="align-middle text-center">
                   <div class="progress-wrapper w-75 mx-auto">
                     <div class="progress-info">
@@ -106,39 +90,31 @@
                 <td class="align-middle text-center">
                   <span class="text-secondary text-xs font-weight-bold">{{ $enrollment->enrollment_date->format('d M Y') }}</span>
                 </td>
-                <td class="align-middle">
-                  <form action="{{ route('enrollments.update', $enrollment) }}" method="POST" class="d-inline">
-                    @csrf
-                    @method('PUT')
-                    <select name="status" class="form-control form-control-sm d-inline-block" style="width: auto;" onchange="this.form.submit()">
-                      <option value="pending" {{ $enrollment->status == 'pending' ? 'selected' : '' }}>Pending</option>
-                      <option value="approved" {{ $enrollment->status == 'approved' ? 'selected' : '' }}>Approved</option>
-                      <option value="rejected" {{ $enrollment->status == 'rejected' ? 'selected' : '' }}>Rejected</option>
-                      <option value="completed" {{ $enrollment->status == 'completed' ? 'selected' : '' }}>Completed</option>
-                    </select>
-                  </form>
+
+                <td class="align-middle text-center text-sm">
+                  <div class="d-flex flex-column align-items-center">
+                    <span class="badge badge-sm bg-gradient-{{ $enrollment->payment_status_badge }}">{{ ucfirst($enrollment->payment_status) }}</span>
+                    <div class="mt-2 d-flex gap-1">
+                      @if($enrollment->payment_status == 'pending')
+                      <button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#paymentModal{{ $enrollment->id }}">Verify</button>
+                      @endif
+                      @php $lastPayment = $enrollment->payments->last(); @endphp
+                      @if($lastPayment)
+                      <a href="{{ route('payments.show', $lastPayment) }}" class="btn btn-sm btn-info">Lihat Bukti</a>
+                      @endif
+                    </div>
+                  </div>
+                </td>
 
                 <td class="align-middle text-center text-sm">
                   @if($enrollment->final_score !== null)
-                    <span class="text-xs font-weight-bold">{{ number_format($enrollment->final_score, 2) }}</span>
+                  <span class="text-xs font-weight-bold">{{ number_format($enrollment->final_score, 2) }}</span>
                   @else
-                    <span class="text-secondary text-xs">-</span>
+                  <span class="text-secondary text-xs">-</span>
                   @endif
                 </td>
-                <td class="align-middle text-center text-sm">
-                  @if($enrollment->final_score !== null)
-                    @if($enrollment->is_passed)
-                      <span class="badge badge-sm bg-gradient-success">Lulus</span>
-                    @else
-                      <span class="badge badge-sm bg-gradient-danger">Tidak Lulus</span>
-                    @endif
-                  @else
-                    <span class="text-secondary text-xs">-</span>
-                  @endif
-                </td>
-                <td class="align-middle">
-                  <button type="button" class="btn btn-xs btn-primary" data-bs-toggle="modal" data-bs-target="#updateModal{{ $enrollment->id }}">Edit</button>
-
+                <td class="align-middle text-center">
+                  <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#updateModal{{ $enrollment->id }}">Edit</button>
                 </td>
               </tr>
               @empty
@@ -260,4 +236,3 @@
 @endforeach
 
 @endsection
-

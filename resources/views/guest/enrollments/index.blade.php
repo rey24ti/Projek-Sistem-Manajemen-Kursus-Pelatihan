@@ -40,6 +40,10 @@
                     @if($enrollment->payment_status == 'pending')
                       <br><small><a href="{{ route('payments.create', $enrollment) }}" class="text-warning">Upload Bukti</a></small>
                     @endif
+                    @php $lastPayment = $enrollment->payments->last(); @endphp
+                    @if($lastPayment)
+                      <br><small><a href="{{ route('payments.show', $lastPayment) }}" class="text-info">Lihat Bukti</a></small>
+                    @endif
                   @else
                     <span class="text-secondary text-xs">-</span>
                   @endif

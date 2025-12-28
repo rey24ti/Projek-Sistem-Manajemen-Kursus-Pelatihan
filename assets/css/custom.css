@@ -1,0 +1,97 @@
+/* Custom overrides and fixes for the dashboard UI */
+
+/* Ensure sidebar icons are always visible and colored correctly */
+.sidenav .nav-link .icon {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+.sidenav .nav-link .icon i {
+  opacity: 1 !important;
+  color: #344767 !important;
+}
+.sidenav .nav-link.active .icon i {
+  color: #fff !important;
+}
+
+/* Ensure sidebar is always visible on desktop */
+@media (min-width: 1200px) {
+  .g-sidenav-show .sidenav {
+    transform: translateX(0) !important;
+  }
+}
+
+/* Small spacing/tidy improvements */
+.container-fluid.py-4 {
+  padding-top: 1.25rem !important;
+  padding-bottom: 1.25rem !important;
+}
+
+/* Ensure forms and upload area are readable on all pages */
+.card .card-body form .form-label {
+  font-weight: 600;
+  color: #344767;
+}
+
+/* Utilities */
+.btn-xs {
+  padding: .35rem .6rem;
+  font-size: .75rem;
+  border-radius: .35rem;
+}
+
+/* Filters and action buttons spacing/height consistency */
+.filters-group {
+  gap: .35rem !important;
+  align-items: center;
+}
+/* Ensure wrapper children align centrally so selects and button line up */
+.filters-group > div { display: inline-flex; align-items: center; }
+.filters-group select.form-control-sm {
+  height: 36px;
+  padding: 0 .75rem;
+  display: inline-flex;
+  align-items: center;
+  line-height: 1.2;
+  box-sizing: border-box;
+  border-radius: .45rem;
+}
+.filters-group .btn-sm {
+  height: 36px;
+  padding: 0 .75rem;
+  display: inline-flex;
+  align-items: center;
+  margin-top: 0;
+  line-height: 1.2;
+  border-radius: .45rem;
+}
+/* Use margin to nudge the filter button down to match select controls */
+.filters-group .btn-sm {
+  margin-top: 3px;
+  /* Increase if needed: margin-top: 4px; */
+}
+
+
+/* Table action buttons spacing */
+.table .d-flex.gap-1 > .btn {
+  padding: .35rem .6rem;
+  min-width: 72px;
+}
+.table .d-flex.gap-1 > .btn + .btn {
+  margin-left: .4rem;
+}
+
+/* Make verify and view buttons consistent visual size */
+.btn-sm.btn-success, .btn-sm.btn-info {
+  border-radius: .45rem;
+}
+
+/* Tighten the filter group on small screens */
+@media (max-width: 767px) {
+  .filters-group {
+    flex-wrap: wrap;
+    gap: .5rem;
+  }
+  .filters-group select.form-control-sm, .filters-group .btn-sm {
+    height: 40px;
+  }
+}

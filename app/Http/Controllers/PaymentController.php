@@ -12,31 +12,41 @@ class PaymentController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth');
+        // Allow guest (unauthenticated) users to access payment upload (create/store)
+        $this->middleware('auth')->except(['create', 'store']);
     }
 
-    // For students to upload payment proof
+    // For students to upload payment proof (allow guests)
     public function create(Enrollment $enrollment)
     {
-        // Check if user owns this enrollment
-        if ($enrollment->user_id != auth()->id()) {
-            abort(403, 'Anda tidak memiliki akses ke pendaftaran ini.');
-        }
-
-        // Check if payment already verified
+        // If the payment already verified, block further uploads
         if ($enrollment->payment_status === 'verified') {
             return back()->with('info', 'Pembayaran sudah terverifikasi.');
         }
 
         $course = $enrollment->course;
+
+        // If user is logged in, ensure they own the enrollment
+        if (auth()->check() && $enrollment->user_id != auth()->id()) {
+            abort(403, 'Anda tidak memiliki akses ke pendaftaran ini.');
+        }
+
         return view('guest.payments.create', compact('enrollment', 'course'));
     }
 
     public function store(Request $request, Enrollment $enrollment)
     {
-        // Check if user owns this enrollment
-        if ($enrollment->user_id != auth()->id()) {
-            abort(403);
+        // If user is logged in, ensure they own the enrollment
+        if (auth()->check()) {
+            if ($enrollment->user_id != auth()->id()) {
+                abort(403);
+            }
+        } else {
+            // Guest upload: require owner_email to match enrollment owner's email
+            $ownerEmail = $request->input('owner_email');
+            if (!$ownerEmail || $ownerEmail !== $enrollment->user->email) {
+                return back()->withErrors(['owner_email' => 'Email tidak cocok dengan pendaftar.'])->withInput();
+            }
         }
 
         $validator = Validator::make($request->all(), [

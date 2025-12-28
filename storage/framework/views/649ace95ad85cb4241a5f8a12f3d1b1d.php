@@ -47,41 +47,23 @@
 <?php endif; ?>
   <?php endif; ?>
 
-  <link rel="apple-touch-icon" sizes="76x76" href="../assets/img/apple-icon.png">
-  <link rel="icon" type="image/png" href="../assets/img/favicon.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="<?php echo e(asset('assets/img/apple-icon.png')); ?>">
+  <link rel="icon" type="image/png" href="<?php echo e(asset('assets/img/favicon.png')); ?>">
   <title>
     Soft UI Dashboard by Creative Tim
   </title>
   <!--     Fonts and icons     -->
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
   <!-- Nucleo Icons -->
-  <link href="../assets/css/nucleo-icons.css" rel="stylesheet" />
-  <link href="../assets/css/nucleo-svg.css" rel="stylesheet" />
+  <link href="<?php echo e(asset('assets/css/nucleo-icons.css')); ?>" rel="stylesheet" />
+  <link href="<?php echo e(asset('assets/css/nucleo-svg.css')); ?>" rel="stylesheet" />
   <!-- Font Awesome Icons (use CDN to avoid kit 403) -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
-  <link href="../assets/css/nucleo-svg.css" rel="stylesheet" />
+  <link href="<?php echo e(asset('assets/css/nucleo-svg.css')); ?>" rel="stylesheet" />
   <!-- CSS Files -->
-  <link id="pagestyle" href="../assets/css/soft-ui-dashboard.css?v=1.0.3" rel="stylesheet" />
-  <style>
-    /* Ensure sidebar icons are always visible */
-    .sidenav .nav-link .icon {
-      opacity: 1 !important;
-      visibility: visible !important;
-    }
-    .sidenav .nav-link .icon i {
-      opacity: 1 !important;
-      color: #344767 !important;
-    }
-    .sidenav .nav-link.active .icon i {
-      color: #fff !important;
-    }
-    /* Ensure sidebar is always visible on desktop */
-    @media (min-width: 1200px) {
-      .g-sidenav-show .sidenav {
-        transform: translateX(0) !important;
-      }
-    }
-  </style>
+  <link id="pagestyle" href="<?php echo e(asset('assets/css/soft-ui-dashboard.css')); ?>?v=1.0.3" rel="stylesheet" />
+  <!-- Custom CSS overrides -->
+  <link href="<?php echo e(asset('assets/css/custom.css')); ?>" rel="stylesheet" />
 </head>
 
 <body class="g-sidenav-show  bg-gray-100 <?php echo e((\Request::is('rtl') ? 'rtl' : (Request::is('virtual-reality') ? 'virtual-reality' : ''))); ?> ">
@@ -101,12 +83,12 @@
     </div>
   <?php endif; ?>
     <!--   Core JS Files   -->
-  <script src="../assets/js/core/popper.min.js"></script>
-  <script src="../assets/js/core/bootstrap.min.js"></script>
-  <script src="../assets/js/plugins/perfect-scrollbar.min.js"></script>
-  <script src="../assets/js/plugins/smooth-scrollbar.min.js"></script>
-  <script src="../assets/js/plugins/fullcalendar.min.js"></script>
-  <script src="../assets/js/plugins/chartjs.min.js"></script>
+  <script src="<?php echo e(asset('assets/js/core/popper.min.js')); ?>"></script>
+  <script src="<?php echo e(asset('assets/js/core/bootstrap.min.js')); ?>"></script>
+  <script src="<?php echo e(asset('assets/js/plugins/perfect-scrollbar.min.js')); ?>"></script>
+  <script src="<?php echo e(asset('assets/js/plugins/smooth-scrollbar.min.js')); ?>"></script>
+  <script src="<?php echo e(asset('assets/js/plugins/fullcalendar.min.js')); ?>"></script>
+  <script src="<?php echo e(asset('assets/js/plugins/chartjs.min.js')); ?>"></script>
   <?php echo $__env->yieldPushContent('rtl'); ?>
   <?php echo $__env->yieldPushContent('dashboard'); ?>
   <script>
@@ -133,7 +115,7 @@
   <!-- Github buttons -->
   <script async defer src="https://buttons.github.io/buttons.js"></script>
   <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
-  <script src="../assets/js/soft-ui-dashboard.min.js?v=1.0.3"></script>
+  <script src="<?php echo e(asset('assets/js/soft-ui-dashboard.min.js')); ?>?v=1.0.3"></script>
 </body>
 
 </html>
