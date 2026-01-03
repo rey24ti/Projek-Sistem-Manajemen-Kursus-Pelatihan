@@ -90,6 +90,32 @@ endif;
 unset($__errorArgs, $__bag); ?>
                 </div>
                 <div class="mb-3">
+                  <input type="tel" class="form-control" placeholder="Masukkan nomor telepon (opsional)" name="phone" id="phone" aria-label="Phone" aria-describedby="phone" value="<?php echo e(old('phone')); ?>" autocomplete="off">
+                  <?php $__errorArgs = ['phone'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                    <p class="text-danger text-xs mt-2"><?php echo e($message); ?></p>
+                  <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                </div>
+                <div class="mb-3">
+                  <input type="text" class="form-control" placeholder="Masukkan lokasi (opsional)" name="location" id="location" aria-label="Location" aria-describedby="location" value="<?php echo e(old('location')); ?>" autocomplete="off">
+                  <?php $__errorArgs = ['location'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                    <p class="text-danger text-xs mt-2"><?php echo e($message); ?></p>
+                  <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                </div>
+                <div class="mb-3">
                   <input type="password" class="form-control" placeholder="Masukkan password Anda" name="password" id="password" aria-label="Password" aria-describedby="password-addon" autocomplete="new-password" required>
                   <?php $__errorArgs = ['password'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');

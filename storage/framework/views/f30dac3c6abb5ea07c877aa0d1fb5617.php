@@ -29,6 +29,7 @@
                 <select name="status" class="form-control">
                   <option value="">Semua Status</option>
                   <option value="draft" <?php echo e(request('status') == 'draft' ? 'selected' : ''); ?>>Draft</option>
+                  <option value="pending" <?php echo e(request('status') == 'pending' ? 'selected' : ''); ?>>Pending</option>
                   <option value="open" <?php echo e(request('status') == 'open' ? 'selected' : ''); ?>>Open</option>
                   <option value="ongoing" <?php echo e(request('status') == 'ongoing' ? 'selected' : ''); ?>>Ongoing</option>
                   <option value="completed" <?php echo e(request('status') == 'completed' ? 'selected' : ''); ?>>Completed</option>
@@ -82,6 +83,12 @@
                   <a href="<?php echo e(route('courses.show', $course)); ?>" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Lihat">
                     Lihat
                   </a>
+                  <?php if($course->status === 'pending'): ?>
+                  <form action="<?php echo e(route('courses.approve', $course)); ?>" method="POST" class="d-inline ms-2">
+                    <?php echo csrf_field(); ?>
+                    <button type="submit" class="text-success font-weight-bold text-xs border-0 bg-transparent" onclick="return confirm('Approve kursus ini dan buka pendaftaran?')">Approve</button>
+                  </form>
+                  <?php endif; ?>
                   <a href="<?php echo e(route('courses.edit', $course)); ?>" class="text-secondary font-weight-bold text-xs ms-2" data-toggle="tooltip" data-original-title="Edit">
                     Edit
                   </a>

@@ -7,7 +7,6 @@
       <div class="card-header pb-0">
         <div class="d-flex justify-content-between align-items-center">
           <h6>Daftar Pengguna</h6>
-          <a href="<?php echo e(route('users.create')); ?>" class="btn btn-primary btn-sm">Tambah Pengguna</a>
         </div>
       </div>
       <div class="card-body px-0 pt-0 pb-2">

@@ -45,7 +45,10 @@ Route::group(['middleware' => 'auth'], function () {
     Route::group(['middleware' => 'role:admin'], function () {
         Route::resource('categories', CategoryController::class);
         Route::resource('materials', CourseMaterialController::class)->except(['index', 'show']);
-        Route::resource('users', \App\Http\Controllers\UserController::class);
+        Route::resource('users', \App\Http\Controllers\UserController::class)->except(['create', 'store']);
+
+        // Courses approval
+        Route::post('courses/{course}/approve', [CourseController::class, 'approve'])->name('courses.approve');
 
     });
 

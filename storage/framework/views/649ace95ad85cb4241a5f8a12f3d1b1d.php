@@ -74,14 +74,7 @@
     <?php echo $__env->yieldContent('guest'); ?>
   <?php endif; ?>
 
-  <?php if(session()->has('success')): ?>
-    <div x-data="{ show: true}"
-        x-init="setTimeout(() => show = false, 4000)"
-        x-show="show"
-        class="position-fixed bg-success rounded right-3 text-sm py-2 px-4">
-      <p class="m-0"><?php echo e(session('success')); ?></p>
-    </div>
-  <?php endif; ?>
+  <?php echo $__env->make('layouts.partials.flash', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
     <!--   Core JS Files   -->
   <script src="<?php echo e(asset('assets/js/core/popper.min.js')); ?>"></script>
   <script src="<?php echo e(asset('assets/js/core/bootstrap.min.js')); ?>"></script>
@@ -109,6 +102,18 @@
           sidenav.classList.add('show');
         }
       }
+    });
+
+    // Auto-hide global flash notifications
+    document.addEventListener('DOMContentLoaded', function() {
+      setTimeout(function() {
+        document.querySelectorAll('[data-flash-autohide]').forEach(function(el) {
+          el.classList.remove('show');
+          setTimeout(function() {
+            if (el && el.parentNode) el.parentNode.removeChild(el);
+          }, 200);
+        });
+      }, 4000);
     });
   </script>
 

@@ -56,14 +56,7 @@
     @yield('guest')
   @endguest
 
-  @if(session()->has('success'))
-    <div x-data="{ show: true}"
-        x-init="setTimeout(() => show = false, 4000)"
-        x-show="show"
-        class="position-fixed bg-success rounded right-3 text-sm py-2 px-4">
-      <p class="m-0">{{ session('success')}}</p>
-    </div>
-  @endif
+  @include('layouts.partials.flash')
     <!--   Core JS Files   -->
   <script src="{{ asset('assets/js/core/popper.min.js') }}"></script>
   <script src="{{ asset('assets/js/core/bootstrap.min.js') }}"></script>
@@ -91,6 +84,18 @@
           sidenav.classList.add('show');
         }
       }
+    });
+
+    // Auto-hide global flash notifications
+    document.addEventListener('DOMContentLoaded', function() {
+      setTimeout(function() {
+        document.querySelectorAll('[data-flash-autohide]').forEach(function(el) {
+          el.classList.remove('show');
+          setTimeout(function() {
+            if (el && el.parentNode) el.parentNode.removeChild(el);
+          }, 200);
+        });
+      }, 4000);
     });
   </script>
 

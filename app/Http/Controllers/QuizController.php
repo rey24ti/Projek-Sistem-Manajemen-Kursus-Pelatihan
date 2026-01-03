@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Quiz;
 use App\Models\Course;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class QuizController extends Controller
@@ -16,7 +17,9 @@ class QuizController extends Controller
 
     public function index(Course $course)
     {
-        if (auth()->user()->isStaff() && $course->trainer_id != auth()->id()) {
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        if ($user->isStaff() && $course->trainer_id != Auth::id()) {
             abort(403, 'Anda tidak memiliki akses ke kursus ini.');
         }
 
@@ -26,7 +29,9 @@ class QuizController extends Controller
 
     public function create(Course $course)
     {
-        if (auth()->user()->isStaff() && $course->trainer_id != auth()->id()) {
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        if ($user->isStaff() && $course->trainer_id != Auth::id()) {
             abort(403);
         }
 
@@ -35,7 +40,9 @@ class QuizController extends Controller
 
     public function store(Request $request, Course $course)
     {
-        if (auth()->user()->isStaff() && $course->trainer_id != auth()->id()) {
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        if ($user->isStaff() && $course->trainer_id != Auth::id()) {
             abort(403);
         }
 
@@ -74,7 +81,9 @@ class QuizController extends Controller
             abort(404);
         }
 
-        if (auth()->user()->isStaff() && $course->trainer_id != auth()->id()) {
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        if ($user->isStaff() && $course->trainer_id != Auth::id()) {
             abort(403);
         }
 
@@ -88,7 +97,9 @@ class QuizController extends Controller
             abort(404);
         }
 
-        if (auth()->user()->isStaff() && $course->trainer_id != auth()->id()) {
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        if ($user->isStaff() && $course->trainer_id != Auth::id()) {
             abort(403);
         }
 
@@ -101,7 +112,9 @@ class QuizController extends Controller
             abort(404);
         }
 
-        if (auth()->user()->isStaff() && $course->trainer_id != auth()->id()) {
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        if ($user->isStaff() && $course->trainer_id != Auth::id()) {
             abort(403);
         }
 
@@ -139,7 +152,9 @@ class QuizController extends Controller
             abort(404);
         }
 
-        if (auth()->user()->isStaff() && $course->trainer_id != auth()->id()) {
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        if ($user->isStaff() && $course->trainer_id != Auth::id()) {
             abort(403);
         }
 

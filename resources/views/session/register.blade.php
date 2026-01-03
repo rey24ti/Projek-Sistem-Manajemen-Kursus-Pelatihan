@@ -76,6 +76,18 @@
                   @enderror
                 </div>
                 <div class="mb-3">
+                  <input type="tel" class="form-control" placeholder="Masukkan nomor telepon (opsional)" name="phone" id="phone" aria-label="Phone" aria-describedby="phone" value="{{ old('phone') }}" autocomplete="off">
+                  @error('phone')
+                    <p class="text-danger text-xs mt-2">{{ $message }}</p>
+                  @enderror
+                </div>
+                <div class="mb-3">
+                  <input type="text" class="form-control" placeholder="Masukkan lokasi (opsional)" name="location" id="location" aria-label="Location" aria-describedby="location" value="{{ old('location') }}" autocomplete="off">
+                  @error('location')
+                    <p class="text-danger text-xs mt-2">{{ $message }}</p>
+                  @enderror
+                </div>
+                <div class="mb-3">
                   <input type="password" class="form-control" placeholder="Masukkan password Anda" name="password" id="password" aria-label="Password" aria-describedby="password-addon" autocomplete="new-password" required>
                   @error('password')
                     <p class="text-danger text-xs mt-2">{{ $message }}</p>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Enrollment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class CertificateController extends Controller
@@ -16,8 +17,18 @@ class CertificateController extends Controller
     // View certificate
     public function show(Enrollment $enrollment)
     {
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        if (!$user) {
+            abort(403);
+        }
+
         // Check if user owns this enrollment or is admin/staff
-        if ($enrollment->user_id != auth()->id() && !auth()->user()->isAdmin() && !(auth()->user()->isStaff() && $enrollment->course->trainer_id == auth()->id())) {
+        if (
+            $enrollment->user_id != Auth::id()
+            && !$user->isAdmin()
+            && !($user->isStaff() && $enrollment->course->trainer_id == Auth::id())
+        ) {
             abort(403);
         }
 
@@ -34,7 +45,8 @@ class CertificateController extends Controller
         $certificatePath = $enrollment->certificate_path;
         $fileName = 'Sertifikat_' . $enrollment->user->name . '_' . $enrollment->course->title . '.pdf';
 
-        return Storage::disk('public')->download($certificatePath, $fileName);
+        $absolutePath = Storage::disk('public')->path($certificatePath);
+        return response()->download($absolutePath, $fileName);
     }
 
     // Generate certificate (simple text-based, bisa dikembangkan dengan PDF library)

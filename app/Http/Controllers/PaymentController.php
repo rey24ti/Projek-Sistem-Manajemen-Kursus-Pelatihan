@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Payment;
 use App\Models\Enrollment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
@@ -27,7 +28,7 @@ class PaymentController extends Controller
         $course = $enrollment->course;
 
         // If user is logged in, ensure they own the enrollment
-        if (auth()->check() && $enrollment->user_id != auth()->id()) {
+        if (Auth::check() && $enrollment->user_id != Auth::id()) {
             abort(403, 'Anda tidak memiliki akses ke pendaftaran ini.');
         }
 
@@ -37,8 +38,8 @@ class PaymentController extends Controller
     public function store(Request $request, Enrollment $enrollment)
     {
         // If user is logged in, ensure they own the enrollment
-        if (auth()->check()) {
-            if ($enrollment->user_id != auth()->id()) {
+        if (Auth::check()) {
+            if ($enrollment->user_id != Auth::id()) {
                 abort(403);
             }
         } else {
@@ -83,10 +84,23 @@ class PaymentController extends Controller
     // View payment proof (for students)
     public function show(Payment $payment)
     {
-        if ($payment->enrollment->user_id != auth()->id() && !auth()->user()->isAdmin() && !(auth()->user()->isStaff() && $payment->enrollment->course->trainer_id == auth()->id())) {
+        /** @var \App\Models\User|null $user */
+        $user = Auth::user();
+
+        if (!$user) {
             abort(403);
         }
 
-        return Storage::disk('public')->download($payment->proof_path, $payment->proof_name);
+        if (
+            $payment->enrollment->user_id != $user->id
+            && !$user->isAdmin()
+            && !($user->isStaff() && $payment->enrollment->course->trainer_id == $user->id)
+        ) {
+            abort(403);
+        }
+
+        $absolutePath = Storage::disk('public')->path($payment->proof_path);
+
+        return response()->download($absolutePath, $payment->proof_name);
     }
 }

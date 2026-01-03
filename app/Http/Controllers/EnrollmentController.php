@@ -82,6 +82,11 @@ class EnrollmentController extends Controller
 
         $course = Course::findOrFail($request->course_id);
 
+        // Only allow enrollment into courses that are open
+        if ($course->status !== 'open') {
+            return back()->with('error', 'Kursus belum dibuka.');
+        }
+
         /** @var User $user */
         $user = Auth::user();
 

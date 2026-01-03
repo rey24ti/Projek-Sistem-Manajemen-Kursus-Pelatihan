@@ -15,6 +15,9 @@ class CourseController extends Controller
     {
         // Hanya index dan show yang boleh diakses tanpa login
         $this->middleware('auth')->except(['index', 'show']);
+
+        // CRUD kursus hanya untuk admin & staff
+        $this->middleware('role:admin,staff')->except(['index', 'show']);
     }
 
     public function index(Request $request)
@@ -79,17 +82,20 @@ class CourseController extends Controller
         return view($view, compact('courses', 'categories'));
     }
 
-    protected function validationRules(): array
+    protected function validationRules(?User $user = null, bool $isUpdate = false): array
     {
+        $isStaff = $user && $user->isStaff();
+
         return [
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'category_id' => 'required|exists:categories,id',
-            'trainer_id' => 'required|exists:users,id',
+            'trainer_id' => $isStaff ? 'nullable' : 'required|exists:users,id',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after:start_date',
             'max_participants' => 'required|integer|min:1',
-            'status' => 'required|in:draft,open,ongoing,completed,cancelled',
+            // Staff tidak boleh menentukan status (akan dipaksa pending saat create, dan saat update status tidak diubah)
+            'status' => $isStaff ? 'nullable' : 'required|in:draft,pending,open,ongoing,completed,cancelled',
             'price' => 'required|numeric|min:0',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'passing_score' => 'required|integer|min:0|max:100',
@@ -115,7 +121,10 @@ class CourseController extends Controller
 
     public function store(Request $request)
     {
-        $rules = $this->validationRules();
+        /** @var User|null $user */
+        $user = Auth::user();
+
+        $rules = $this->validationRules($user);
         $validator = Validator::make($request->all(), $rules, [], [
             'passing_score' => 'nilai minimum kelulusan',
         ]);
@@ -126,11 +135,10 @@ class CourseController extends Controller
 
         $data = $validator->validated();
 
-        // For staff, ensure they can only create courses for themselves
-        /** @var User|null $user */
-        $user = Auth::user();
-        if ($user && $user->isStaff() && $data['trainer_id'] != $user->id) {
-            return back()->with('error', 'Anda hanya dapat membuat kursus untuk diri sendiri.');
+        // Staff: trainer_id dipaksa ke diri sendiri, status dipaksa pending
+        if ($user && $user->isStaff()) {
+            $data['trainer_id'] = $user->id;
+            $data['status']     = 'pending';
         }
 
         if ($request->hasFile('image')) {
@@ -157,12 +165,25 @@ class CourseController extends Controller
                 ->exists();
         }
 
+        // Non-login hanya boleh lihat kursus open
+        if (! $user && $course->status !== 'open') {
+            abort(404);
+        }
+
+        // Role guest: boleh lihat course open, atau course yang sudah dia daftari
+        if ($user && $user->isGuest() && $course->status !== 'open' && ! $isEnrolled) {
+            abort(404);
+        }
+
         if (! $user) {
             $view = 'guest.courses.show';
-        } else if ($user->isAdmin()) {
+        } elseif ($user->isAdmin()) {
             $view = 'admin.courses.show';
-        } else if ($user->isStaff()) {
+        } elseif ($user->isStaff()) {
             $view = 'staff.courses.show';
+        } elseif ($user->isGuest()) {
+            // Logged-in guest should use sidebar layout
+            $view = 'guest.courses.auth_show';
         } else {
             $view = 'guest.courses.show';
         }
@@ -203,7 +224,7 @@ class CourseController extends Controller
             abort(403, 'Anda tidak memiliki akses untuk mengedit kursus ini.');
         }
 
-        $rules = $this->validationRules();
+        $rules = $this->validationRules($user, true);
         $validator = Validator::make($request->all(), $rules, [], [
             'passing_score' => 'nilai minimum kelulusan',
         ]);
@@ -214,9 +235,10 @@ class CourseController extends Controller
 
         $data = $validator->validated();
 
-        // For staff, ensure they can only assign themselves as trainer
-        if ($user && $user->isStaff() && $data['trainer_id'] != $user->id) {
-            return back()->with('error', 'Anda hanya dapat mengassign diri sendiri sebagai trainer.');
+        // Staff: trainer_id dipaksa ke diri sendiri, status tidak boleh diubah
+        if ($user && $user->isStaff()) {
+            $data['trainer_id'] = $user->id;
+            $data['status']     = $course->status;
         }
 
         if ($request->hasFile('image')) {
@@ -235,6 +257,27 @@ class CourseController extends Controller
 
         return redirect()->route('courses.index')
             ->with('success', 'Kursus berhasil diperbarui.');
+    }
+
+    /**
+     * Admin action: approve course (pending -> open)
+     */
+    public function approve(Course $course)
+    {
+        /** @var User|null $user */
+        $user = Auth::user();
+
+        if (! $user || ! $user->isAdmin()) {
+            abort(403);
+        }
+
+        if ($course->status !== 'pending') {
+            return back()->with('error', 'Kursus ini tidak dalam status pending.');
+        }
+
+        $course->update(['status' => 'open']);
+
+        return back()->with('success', 'Kursus berhasil di-approve dan dibuka.');
     }
 
     public function destroy(Course $course)

@@ -103,13 +103,8 @@ class UserController extends Controller
     public function update(Request $request, User $user)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
             'password' => 'nullable|string|min:8|confirmed',
             'role' => 'required|in:staff,guest',
-            'phone' => 'nullable|string|max:20',
-            'location' => 'nullable|string|max:255',
-            'about_me' => 'nullable|string',
         ]);
 
         if ($validator->fails()) {
@@ -117,12 +112,7 @@ class UserController extends Controller
         }
 
         $data = [
-            'name' => $request->name,
-            'email' => $request->email,
             'role' => $request->role,
-            'phone' => $request->phone,
-            'location' => $request->location,
-            'about_me' => $request->about_me,
         ];
 
         if ($request->filled('password')) {

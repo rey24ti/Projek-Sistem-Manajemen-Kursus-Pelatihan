@@ -16,15 +16,6 @@
                             </button>
                         </div>
                     @endif
-                    @if(session('success'))
-                        <div class="m-3  alert alert-success alert-dismissible fade show" id="alert-success" role="alert">
-                            <span class="alert-text text-white">
-                            {{ session('success') }}</span>
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
-                                <i class="fa fa-close" aria-hidden="true"></i>
-                            </button>
-                        </div>
-                    @endif
                     <div class="card-header pb-0 text-left bg-transparent">
                         <h4 class="mb-0">Forgot your password? Enter your email here</h4>
                     </div>

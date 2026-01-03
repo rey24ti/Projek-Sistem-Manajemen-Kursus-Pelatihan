@@ -66,6 +66,7 @@ class Course extends Model
     {
         $badges = [
             'draft' => 'secondary',
+            'pending' => 'warning',
             'open' => 'success',
             'ongoing' => 'info',
             'completed' => 'primary',

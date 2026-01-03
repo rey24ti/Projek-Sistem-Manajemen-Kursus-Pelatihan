@@ -7,6 +7,7 @@
       <div class="card-header pb-0">
         <div class="d-flex justify-content-between align-items-center">
           <h6>Kursus Saya</h6>
+          <a href="<?php echo e(route('courses.create')); ?>" class="btn btn-primary btn-sm">Tambah Kursus</a>
         </div>
       </div>
       <div class="card-body px-0 pt-0 pb-2">
@@ -19,9 +20,11 @@
               <select name="status" class="form-control">
                 <option value="">Semua Status</option>
                 <option value="draft" <?php echo e(request('status') == 'draft' ? 'selected' : ''); ?>>Draft</option>
+                <option value="pending" <?php echo e(request('status') == 'pending' ? 'selected' : ''); ?>>Pending</option>
                 <option value="open" <?php echo e(request('status') == 'open' ? 'selected' : ''); ?>>Open</option>
                 <option value="ongoing" <?php echo e(request('status') == 'ongoing' ? 'selected' : ''); ?>>Ongoing</option>
                 <option value="completed" <?php echo e(request('status') == 'completed' ? 'selected' : ''); ?>>Completed</option>
+                <option value="cancelled" <?php echo e(request('status') == 'cancelled' ? 'selected' : ''); ?>>Cancelled</option>
               </select>
             </div>
             <div class="col-md-3">

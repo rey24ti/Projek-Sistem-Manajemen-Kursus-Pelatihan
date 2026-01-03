@@ -7,6 +7,7 @@ use App\Models\Assignment;
 use App\Models\Quiz;
 use App\Models\Course;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
@@ -24,7 +25,13 @@ class SubmissionController extends Controller
             abort(404);
         }
 
-        if (!auth()->user()->isAdmin() && !(auth()->user()->isStaff() && $course->trainer_id == auth()->id())) {
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        if (!$user) {
+            abort(403);
+        }
+
+        if (!$user->isAdmin() && !($user->isStaff() && $course->trainer_id == Auth::id())) {
             abort(403);
         }
 
@@ -54,7 +61,13 @@ class SubmissionController extends Controller
             abort(404);
         }
 
-        if (!auth()->user()->isAdmin() && !(auth()->user()->isStaff() && $course->trainer_id == auth()->id())) {
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        if (!$user) {
+            abort(403);
+        }
+
+        if (!$user->isAdmin() && !($user->isStaff() && $course->trainer_id == Auth::id())) {
             abort(403);
         }
 
@@ -86,7 +99,7 @@ class SubmissionController extends Controller
 
         // Check if user is enrolled
         $enrollment = $course->enrollments()
-            ->where('user_id', auth()->id())
+            ->where('user_id', Auth::id())
             ->where('status', 'approved')
             ->first();
 
@@ -103,7 +116,7 @@ class SubmissionController extends Controller
         }
 
         // Check if already submitted
-        $existing = Submission::where('user_id', auth()->id())
+        $existing = Submission::where('user_id', Auth::id())
             ->where('assignment_id', $assignment->id)
             ->first();
 
@@ -131,7 +144,7 @@ class SubmissionController extends Controller
         $filePath = $file->store('submissions', 'public');
 
         Submission::create([
-            'user_id' => auth()->id(),
+            'user_id' => Auth::id(),
             'assignment_id' => $assignment->id,
             'file_path' => $filePath,
             'file_name' => $file->getClientOriginalName(),
@@ -151,7 +164,7 @@ class SubmissionController extends Controller
 
         // Check if user is enrolled
         $enrollment = $course->enrollments()
-            ->where('user_id', auth()->id())
+            ->where('user_id', Auth::id())
             ->where('status', 'approved')
             ->first();
 
@@ -177,7 +190,7 @@ class SubmissionController extends Controller
         }
 
         // Check if already submitted
-        $existing = Submission::where('user_id', auth()->id())
+        $existing = Submission::where('user_id', Auth::id())
             ->where('quiz_id', $quiz->id)
             ->first();
 
@@ -204,7 +217,7 @@ class SubmissionController extends Controller
 
         // Create submission
         Submission::create([
-            'user_id' => auth()->id(),
+            'user_id' => Auth::id(),
             'quiz_id' => $quiz->id,
             'answers' => $userAnswers,
             'score' => $score,

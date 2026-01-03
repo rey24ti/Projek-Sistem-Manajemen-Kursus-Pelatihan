@@ -26,6 +26,7 @@
                         placeholder="Masukkan email Anda" 
                         aria-label="Email" 
                         aria-describedby="email-addon" 
+                        value="<?php echo e(old('email')); ?>"
                         autocomplete="off"
                         autofill="off"
                         data-form-type="other"
@@ -66,10 +67,6 @@ if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>
                     </div>
-                    <div class="form-check form-switch">
-                      <input class="form-check-input" type="checkbox" id="rememberMe" name="remember">
-                      <label class="form-check-label" for="rememberMe">Ingat saya</label>
-                    </div>
                     <div class="text-center">
                       <button type="submit" class="btn bg-gradient-info w-100 mt-4 mb-0">Masuk</button>
                     </div>
@@ -102,10 +99,16 @@ unset($__errorArgs, $__bag); ?>
     document.addEventListener('DOMContentLoaded', function() {
       const emailInput = document.getElementById('email');
       const passwordInput = document.getElementById('password');
+      const shouldClearPasswordOnLoad = document.querySelector('.text-danger') !== null;
+      const serverProvidedEmail = (emailInput.getAttribute('value') || '').trim();
       
       // Clear any autofilled values
       setTimeout(function() {
-        if (emailInput.value && !emailInput.dataset.userInput) {
+        if (shouldClearPasswordOnLoad) {
+          passwordInput.value = '';
+        }
+        // Only clear email if it was browser-autofilled and not intentionally server-provided.
+        if (emailInput.value && !emailInput.dataset.userInput && !serverProvidedEmail) {
           emailInput.value = '';
         }
         if (passwordInput.value && !passwordInput.dataset.userInput) {

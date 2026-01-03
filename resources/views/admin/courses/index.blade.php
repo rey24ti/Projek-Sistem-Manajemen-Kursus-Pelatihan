@@ -29,6 +29,7 @@
                 <select name="status" class="form-control">
                   <option value="">Semua Status</option>
                   <option value="draft" {{ request('status') == 'draft' ? 'selected' : '' }}>Draft</option>
+                  <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
                   <option value="open" {{ request('status') == 'open' ? 'selected' : '' }}>Open</option>
                   <option value="ongoing" {{ request('status') == 'ongoing' ? 'selected' : '' }}>Ongoing</option>
                   <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>Completed</option>
@@ -82,6 +83,12 @@
                   <a href="{{ route('courses.show', $course) }}" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Lihat">
                     Lihat
                   </a>
+                  @if($course->status === 'pending')
+                  <form action="{{ route('courses.approve', $course) }}" method="POST" class="d-inline ms-2">
+                    @csrf
+                    <button type="submit" class="text-success font-weight-bold text-xs border-0 bg-transparent" onclick="return confirm('Approve kursus ini dan buka pendaftaran?')">Approve</button>
+                  </form>
+                  @endif
                   <a href="{{ route('courses.edit', $course) }}" class="text-secondary font-weight-bold text-xs ms-2" data-toggle="tooltip" data-original-title="Edit">
                     Edit
                   </a>
