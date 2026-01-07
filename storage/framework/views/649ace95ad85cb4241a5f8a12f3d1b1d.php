@@ -15,11 +15,7 @@
 -->
 <!DOCTYPE html>
 
-<?php if(\Request::is('rtl')): ?>
-  <html dir="rtl" lang="ar">
-<?php else: ?>
-  <html lang="en" >
-<?php endif; ?>
+<html lang="en" >
 
 <head>
   <meta charset="utf-8" />
@@ -50,7 +46,7 @@
   <link rel="apple-touch-icon" sizes="76x76" href="<?php echo e(asset('assets/img/apple-icon.png')); ?>">
   <link rel="icon" type="image/png" href="<?php echo e(asset('assets/img/favicon.png')); ?>">
   <title>
-    Soft UI Dashboard by Creative Tim
+    Trainify
   </title>
   <!--     Fonts and icons     -->
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
@@ -66,7 +62,7 @@
   <link href="<?php echo e(asset('assets/css/custom.css')); ?>" rel="stylesheet" />
 </head>
 
-<body class="g-sidenav-show  bg-gray-100 <?php echo e((\Request::is('rtl') ? 'rtl' : (Request::is('virtual-reality') ? 'virtual-reality' : ''))); ?> ">
+<body class="g-sidenav-show bg-gray-100">
   <?php if(auth()->guard()->check()): ?>
     <?php echo $__env->yieldContent('auth'); ?>
   <?php endif; ?>
@@ -82,7 +78,6 @@
   <script src="<?php echo e(asset('assets/js/plugins/smooth-scrollbar.min.js')); ?>"></script>
   <script src="<?php echo e(asset('assets/js/plugins/fullcalendar.min.js')); ?>"></script>
   <script src="<?php echo e(asset('assets/js/plugins/chartjs.min.js')); ?>"></script>
-  <?php echo $__env->yieldPushContent('rtl'); ?>
   <?php echo $__env->yieldPushContent('dashboard'); ?>
   <script>
     var win = navigator.platform.indexOf('Win') > -1;

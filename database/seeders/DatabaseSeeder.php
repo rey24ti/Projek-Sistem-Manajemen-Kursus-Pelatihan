@@ -120,5 +120,8 @@ class DatabaseSeeder extends Seeder
             'status' => 'open',
             'price' => 600000,
         ]);
+
+        // Create demo materials & quizzes for each course
+        $this->call(DemoCourseContentSeeder::class);
     }
 }

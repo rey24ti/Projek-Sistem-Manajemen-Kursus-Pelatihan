@@ -22,10 +22,6 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::get('dashboard', function () {
-    return view('dashboard');
-})->name('dashboard');
-
 Route::group(['middleware' => 'auth'], function () {
     Route::get('dashboard', function () {
         return view('dashboard');
@@ -76,7 +72,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     // Quizzes
     Route::resource('courses.quizzes', \App\Http\Controllers\QuizController::class)->except(['show']);
-    Route::get('courses/{course}/quizzes/{quiz}', [\App\Http\Controllers\QuizController::class, 'show'])->name('quizzes.show');
+    Route::get('courses/{course}/quizzes/{quiz}', [\App\Http\Controllers\QuizController::class, 'show'])->name('courses.quizzes.show');
 
     // Submissions (grading)
     Route::post('courses/{course}/assignments/{assignment}/submissions/{submission}/grade', [\App\Http\Controllers\SubmissionController::class, 'gradeAssignment'])->name('submissions.grade-assignment');
@@ -92,38 +88,31 @@ Route::get('payments/{payment}/proof', [\App\Http\Controllers\PaymentController:
 // Certificate routes
 Route::get('enrollments/{enrollment}/certificate', [\App\Http\Controllers\CertificateController::class, 'show'])->name('certificates.show');
 
-// Material download - accessible by enrolled users, admin, and staff
-Route::get('materials/{material}/download', [CourseMaterialController::class, 'show'])->name('materials.download');
-
 // Course content routes for enrolled students
 Route::get('courses/{course}/student/materials', [CourseMaterialController::class, 'index'])->name('courses.student.materials');
 Route::get('courses/{course}/student/assignments', [\App\Http\Controllers\AssignmentController::class, 'index'])->name('courses.student.assignments');
 Route::get('courses/{course}/student/assignments/{assignment}', [\App\Http\Controllers\AssignmentController::class, 'show'])->name('courses.student.assignments.show');
-Route::get('courses/{course}/student/quizzes', [\App\Http\Controllers\QuizController::class, 'index'])->name('courses.student.quizzes');
-Route::get('courses/{course}/student/quizzes/{quiz}', [\App\Http\Controllers\QuizController::class, 'show'])->name('courses.student.quizzes.show');
+Route::get('courses/{course}/student/quizzes', [\App\Http\Controllers\StudentQuizController::class, 'index'])->name('courses.student.quizzes');
+Route::get('courses/{course}/student/quizzes/{quiz}', [\App\Http\Controllers\StudentQuizController::class, 'show'])->name('courses.student.quizzes.show');
 
 
 
 // Routes untuk tamu (belum login)
-    Route::group(['middleware' => 'guest'], function () {
-        Route::get('/register', [RegisterController::class, 'create'])->name('register');
-        // Alias lama yang mungkin masih dipakai di view lama/tercache
-        Route::get('/session/register', [RegisterController::class, 'create'])->name('session.register');
-        Route::post('/register', [RegisterController::class, 'store']);
-        Route::get('/login', [SessionsController::class, 'create']);
-        Route::post('/session', [SessionsController::class, 'store']);
-        Route::get('/login/forgot-password', [ResetController::class, 'create']);
-        Route::post('/forgot-password', [ResetController::class, 'sendEmail']);
-        Route::get('/reset-password/{token}', [ResetController::class, 'resetPass'])->name('password.reset');
-        Route::post('/reset-password', [ChangePasswordController::class, 'changePassword'])->name('password.update');
-    });
-
-    Route::get('/login', function () {
-        return view('session/login-session');
-    })->name('login');
+Route::group(['middleware' => 'guest'], function () {
+    Route::get('/register', [RegisterController::class, 'create'])->name('register');
+    // Alias lama yang mungkin masih dipakai di view lama/tercache
+    Route::get('/session/register', [RegisterController::class, 'create'])->name('session.register');
+    Route::post('/register', [RegisterController::class, 'store']);
+    Route::get('/login', [SessionsController::class, 'create'])->name('login');
+    Route::post('/session', [SessionsController::class, 'store']);
+    Route::get('/login/forgot-password', [ResetController::class, 'create']);
+    Route::post('/forgot-password', [ResetController::class, 'sendEmail']);
+    Route::get('/reset-password/{token}', [ResetController::class, 'resetPass'])->name('password.reset');
+    Route::post('/reset-password', [ChangePasswordController::class, 'changePassword'])->name('password.update');
+});
 
 // Halaman utama: semua user (termasuk guest) diarahkan ke daftar kursus
-    Route::get('/', [CourseController::class, 'index'])->name('home');
+Route::get('/', [CourseController::class, 'index'])->name('home');
 
 // Courses - index & detail bisa diakses guest tanpa login, yang lain tetap butuh auth (diatur di controller __construct)
-    Route::resource('courses', CourseController::class);
+Route::resource('courses', CourseController::class);

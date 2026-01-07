@@ -84,8 +84,19 @@
             </tbody>
           </table>
         </div>
-        <div class="px-3 py-2">
-          {{ $users->links() }}
+        <div class="px-3 py-3">
+          <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div class="text-sm text-secondary">
+              @if($users->total() > 0)
+                Menampilkan {{ $users->firstItem() }}–{{ $users->lastItem() }} dari {{ $users->total() }} pengguna
+              @else
+                Tidak ada data
+              @endif
+            </div>
+            <div class="ms-auto">
+              {{ $users->onEachSide(1)->links() }}
+            </div>
+          </div>
         </div>
       </div>
     </div>

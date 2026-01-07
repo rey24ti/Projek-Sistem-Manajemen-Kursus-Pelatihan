@@ -1,71 +1,34 @@
 @extends('layouts.user_type.guest')
 
 @section('content')
-<div class="row">
-  <div class="col-12">
-    <div class="card mb-4">
-      <div class="card-header pb-0">
-        <div class="d-flex justify-content-between align-items-center">
-          <h6>Detail Kursus</h6>
-          <a href="{{ route('courses.index') }}" class="btn btn-sm btn-secondary">Kembali</a>
+<div class="container-fluid px-2 px-md-4">
+  <div class="row justify-content-center">
+    <div class="col-lg-8 col-md-10">
+      <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center bg-white border-0 pb-2 pt-3">
+          <h5 class="mb-0" style="font-weight:600;font-size:1.2rem;">Detail Kursus</h5>
+          <a href="{{ route('courses.index') }}" class="btn btn-outline-secondary btn-sm px-3">Kembali</a>
         </div>
-      </div>
-      <div class="card-body">
+        <div class="card-body pt-2 pb-3 px-2">
         @if($course->image)
         <div class="mb-3">
 
           <img src="{{ Storage::url($course->image) }}" alt="{{ $course->title }}" class="img-fluid" style="max-height: 300px;">
         </div>
         @endif
-        <h4>{{ $course->title }}</h4>
-        <p class="text-muted">{{ $course->description }}</p>
-        <div class="row mt-4">
+        <h4 class="fw-bold mb-1" style="font-size:1.3rem;">{{ $course->title }}</h4>
+        <p class="text-muted mb-2">{{ $course->description }}</p>
+        <div class="row mt-3 mb-2">
           <div class="col-md-6">
-            <p><strong>Kategori:</strong> {{ $course->category->name }}</p>
-            <p><strong>Trainer:</strong> {{ $course->trainer->name }}</p>
-            <p><strong>Status:</strong> <span class="badge bg-gradient-{{ $course->status_badge }}">{{ ucfirst($course->status) }}</span></p>
+            <div class="mb-1"><span class="fw-semibold">Kategori:</span> <span class="badge bg-gradient-primary">{{ $course->category->name }}</span></div>
+            <div class="mb-1"><span class="fw-semibold">Trainer:</span> {{ $course->trainer->name }}</div>
+            <div class="mb-1"><span class="fw-semibold">Status:</span> <span class="badge bg-gradient-{{ $course->status_badge }}">{{ ucfirst($course->status) }}</span></div>
           </div>
           <div class="col-md-6">
-            <p><strong>Tanggal Mulai:</strong> {{ $course->start_date->format('d M Y') }}</p>
-            <p><strong>Tanggal Selesai:</strong> {{ $course->end_date->format('d M Y') }}</p>
-            <p><strong>Harga:</strong> Rp {{ number_format($course->price, 0, ',', '.') }}</p>
-            <p><strong>Peserta:</strong> {{ $course->enrollments()->where('status', 'approved')->count() }}/{{ $course->max_participants }}</p>
-          </div>
-        </div>
-        @if($isEnrolled)
-          <div class="alert alert-success mt-4">
-            Anda sudah terdaftar pada kursus ini.
-          </div>
-        @else
-          <form action="{{ route('enrollments.register') }}" method="POST" class="mt-4">
-            @csrf
-            <input type="hidden" name="course_id" value="{{ $course->id }}">
-            <button type="submit" class="btn btn-primary">Daftar Sekarang</button>
-          </form>
-
-          <img src="{{ Storage::url($course->image) }}" alt="{{ $course->title }}" class="img-fluid rounded" style="max-height: 400px; width: 100%; object-fit: cover;">
-        </div>
-        @endif
-        
-        <h4>{{ $course->title }}</h4>
-        <p class="text-muted">{{ $course->description }}</p>
-        
-        <div class="row mt-4">
-          <div class="col-md-6">
-            <h6 class="text-uppercase text-secondary text-xs font-weight-bolder">Informasi Kursus</h6>
-            <p><strong>Kategori:</strong> <span class="badge bg-gradient-primary">{{ $course->category->name }}</span></p>
-            <p><strong>Trainer:</strong> {{ $course->trainer->name }}</p>
-            <p><strong>Status:</strong> <span class="badge bg-gradient-{{ $course->status_badge }}">{{ ucfirst($course->status) }}</span></p>
-            @if($course->passing_score)
-            <p><strong>Nilai Minimum Kelulusan:</strong> {{ $course->passing_score }}%</p>
-            @endif
-          </div>
-          <div class="col-md-6">
-            <h6 class="text-uppercase text-secondary text-xs font-weight-bolder">Jadwal & Detail</h6>
-            <p><strong>Tanggal Mulai:</strong> {{ $course->start_date->format('d F Y') }}</p>
-            <p><strong>Tanggal Selesai:</strong> {{ $course->end_date->format('d F Y') }}</p>
-            <p><strong>Harga:</strong> <span class="text-success font-weight-bold">Rp {{ number_format($course->price, 0, ',', '.') }}</span></p>
-            <p><strong>Kuota:</strong> {{ $course->enrollments()->where('status', 'approved')->count() }}/{{ $course->max_participants }} Peserta</p>
+            <div class="mb-1"><span class="fw-semibold">Tanggal Mulai:</span> {{ $course->start_date->format('d M Y') }}</div>
+            <div class="mb-1"><span class="fw-semibold">Tanggal Selesai:</span> {{ $course->end_date->format('d M Y') }}</div>
+            <div class="mb-1"><span class="fw-semibold">Harga:</span> <span class="text-success fw-bold">Rp {{ number_format($course->price, 0, ',', '.') }}</span></div>
+            <div class="mb-1"><span class="fw-semibold">Peserta:</span> {{ $course->enrollments()->where('status', 'approved')->count() }}/{{ $course->max_participants }}</div>
           </div>
         </div>
 
@@ -102,11 +65,7 @@
                     <i class="ni ni-book-bookmark"></i> Materi
                   </a>
                 </div>
-                <div class="col-md-3 mb-2">
-                  <a href="{{ route('courses.student.assignments', $course) }}" class="btn btn-outline-info w-100">
-                    <i class="ni ni-paper-diploma"></i> Tugas
-                  </a>
-                </div>
+                <!-- Tugas dihilangkan -->
                 <div class="col-md-3 mb-2">
                   <a href="{{ route('courses.student.quizzes', $course) }}" class="btn btn-outline-warning w-100">
                     <i class="ni ni-chart-bar-32"></i> Kuis
@@ -172,12 +131,12 @@
           @endif
         @endif
 
-        @if($course->materials->count() > 0 || $course->assignments->count() > 0 || $course->quizzes->count() > 0)
+        @if($course->materials->count() > 0 || $course->quizzes->count() > 0)
         <div class="mt-4">
           <h6>Isi Kursus</h6>
           <div class="row">
             @if($course->materials->count() > 0)
-            <div class="col-md-4 mb-2">
+            <div class="col-md-6 mb-2">
               <div class="card">
                 <div class="card-body text-center">
                   <i class="ni ni-book-bookmark text-primary" style="font-size: 2rem;"></i>
@@ -186,18 +145,8 @@
               </div>
             </div>
             @endif
-            @if($course->assignments->count() > 0)
-            <div class="col-md-4 mb-2">
-              <div class="card">
-                <div class="card-body text-center">
-                  <i class="ni ni-paper-diploma text-info" style="font-size: 2rem;"></i>
-                  <h6 class="mt-2">{{ $course->assignments->count() }} Tugas</h6>
-                </div>
-              </div>
-            </div>
-            @endif
             @if($course->quizzes->count() > 0)
-            <div class="col-md-4 mb-2">
+            <div class="col-md-6 mb-2">
               <div class="card">
                 <div class="card-body text-center">
                   <i class="ni ni-chart-bar-32 text-warning" style="font-size: 2rem;"></i>
@@ -208,7 +157,6 @@
             @endif
           </div>
         </div>
-
         @endif
       </div>
     </div>

@@ -57,17 +57,22 @@
         <div class="row mt-4">
           <div class="col-md-6 mb-4 mb-md-0">
             <div class="card h-100">
-              <div class="card-body">
-                <h6>Materi Kursus</h6>
-                <a href="{{ route('materials.index', $course) }}" class="btn btn-sm btn-info">Kelola Materi</a>
+              <div class="card-body d-flex flex-column">
+                <h6 class="mb-3">Kelola Kursus</h6>
+                <div class="mt-auto d-flex flex-wrap gap-2">
+                  <a href="{{ route('materials.index', $course) }}" class="btn btn-sm btn-info">Kelola Materi</a>
+                  <a href="{{ route('courses.quizzes.index', $course) }}" class="btn btn-sm btn-warning">Kelola Kuis</a>
+                </div>
               </div>
             </div>
           </div>
           <div class="col-md-6">
             <div class="card h-100">
-              <div class="card-body">
-                <h6>Peserta Terdaftar</h6>
-                <a href="{{ route('enrollments.index', ['course_id' => $course->id]) }}" class="btn btn-sm btn-success">Lihat Peserta</a>
+              <div class="card-body d-flex flex-column">
+                <h6 class="mb-3">Peserta Terdaftar</h6>
+                <div class="mt-auto">
+                  <a href="{{ route('enrollments.index', ['course_id' => $course->id]) }}" class="btn btn-sm btn-success">Lihat Peserta</a>
+                </div>
               </div>
             </div>
           </div>

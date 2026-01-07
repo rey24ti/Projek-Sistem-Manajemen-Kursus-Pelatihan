@@ -8,7 +8,7 @@
         <div class="d-flex justify-content-between align-items-center">
           <h6>Daftar Kursus</h6>
           <a href="{{ route('courses.create') }}" class="btn btn-primary btn-sm">Tambah Kursus</a>
-        </div>
+        </div>  
       </div>
       <div class="card-body px-0 pt-0 pb-2">
         <div class="table-responsive p-0">

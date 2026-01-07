@@ -22,6 +22,7 @@
             </thead>
             <tbody>
               @forelse($enrollments as $enrollment)
+              @php /** @var \App\Models\Enrollment $enrollment */ @endphp
               <tr>
                 <td>
                   <div class="d-flex px-2 py-1">
@@ -38,11 +39,12 @@
                   @if($enrollment->payment_status)
                     <span class="badge badge-sm bg-gradient-{{ $enrollment->payment_status_badge }}">{{ ucfirst($enrollment->payment_status) }}</span>
                     @if($enrollment->payment_status == 'pending')
-                      <br><small><a href="{{ route('payments.create', $enrollment) }}" class="text-warning">Upload Bukti</a></small>
+                      <br><small><a href="{{ route('payments.create', $enrollment->getKey()) }}" class="text-warning">Upload Bukti</a></small>
                     @endif
                     @php $lastPayment = $enrollment->payments->last(); @endphp
                     @if($lastPayment)
-                      <br><small><a href="{{ route('payments.show', $lastPayment) }}" class="text-info">Lihat Bukti</a></small>
+                      @php /** @var \App\Models\Payment $lastPayment */ @endphp
+                      <br><small><a href="{{ route('payments.show', $lastPayment->getKey()) }}" class="text-info">Lihat Bukti</a></small>
                     @endif
                   @else
                     <span class="text-secondary text-xs">-</span>
@@ -56,7 +58,7 @@
                       </div>
                     </div>
                     <div class="progress">
-                      <div class="progress-bar bg-gradient-info" style="<?php echo 'width: ' . $enrollment->progress . '%;'; ?>"></div>
+                      <div class="progress-bar bg-gradient-info" style="width: {{ $enrollment->progress }}%;"></div>
                     </div>
                   </div>
                 </td>
@@ -77,7 +79,7 @@
                     <a href="{{ route('courses.show', $enrollment->course) }}" class="text-info font-weight-bold text-xs">Kursus</a>
                     @if($enrollment->status == 'approved')
                       <a href="{{ route('courses.student.materials', $enrollment->course) }}" class="text-primary font-weight-bold text-xs">Materi</a>
-                      <a href="{{ route('courses.student.assignments', $enrollment->course) }}" class="text-info font-weight-bold text-xs">Tugas</a>
+                      <a href="{{ route('courses.student.quizzes', $enrollment->course) }}" class="text-warning font-weight-bold text-xs">Kuis</a>
                       @if($enrollment->is_passed && $enrollment->certificate_path)
                         <a href="{{ route('certificates.show', $enrollment) }}" class="text-success font-weight-bold text-xs" target="_blank">Sertifikat</a>
                       @endif

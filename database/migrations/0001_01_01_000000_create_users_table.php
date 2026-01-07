@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+               $table->string('profile_photo_path')->nullable();
             $table->enum('role', ['admin', 'staff', 'guest'])->default('guest');
             $table->bigInteger('phone')->nullable();
             $table->string('location')->nullable();

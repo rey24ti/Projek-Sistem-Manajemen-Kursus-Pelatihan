@@ -15,6 +15,14 @@ class QuizController extends Controller
         $this->middleware('role:admin,staff');
     }
 
+    private function viewPrefix(): string
+    {
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+
+        return $user->isAdmin() ? 'admin' : 'staff';
+    }
+
     public function index(Course $course)
     {
         /** @var \App\Models\User $user */
@@ -24,7 +32,7 @@ class QuizController extends Controller
         }
 
         $quizzes = $course->quizzes()->orderBy('order')->get();
-        return view('staff.quizzes.index', compact('course', 'quizzes'));
+        return view($this->viewPrefix() . '.quizzes.index', compact('course', 'quizzes'));
     }
 
     public function create(Course $course)
@@ -35,7 +43,7 @@ class QuizController extends Controller
             abort(403);
         }
 
-        return view('staff.quizzes.create', compact('course'));
+        return view($this->viewPrefix() . '.quizzes.create', compact('course'));
     }
 
     public function store(Request $request, Course $course)
@@ -71,7 +79,7 @@ class QuizController extends Controller
 
         Quiz::create($data);
 
-        return redirect()->route('quizzes.index', $course)
+        return redirect()->route('courses.quizzes.index', $course)
             ->with('success', 'Kuis berhasil ditambahkan.');
     }
 
@@ -88,7 +96,7 @@ class QuizController extends Controller
         }
 
         $quiz->load(['submissions.user']);
-        return view('staff.quizzes.show', compact('course', 'quiz'));
+        return view($this->viewPrefix() . '.quizzes.show', compact('course', 'quiz'));
     }
 
     public function edit(Course $course, Quiz $quiz)
@@ -103,7 +111,7 @@ class QuizController extends Controller
             abort(403);
         }
 
-        return view('staff.quizzes.edit', compact('course', 'quiz'));
+        return view($this->viewPrefix() . '.quizzes.edit', compact('course', 'quiz'));
     }
 
     public function update(Request $request, Course $course, Quiz $quiz)
@@ -142,7 +150,7 @@ class QuizController extends Controller
 
         $quiz->update($data);
 
-        return redirect()->route('quizzes.index', $course)
+        return redirect()->route('courses.quizzes.index', $course)
             ->with('success', 'Kuis berhasil diperbarui.');
     }
 
@@ -160,7 +168,7 @@ class QuizController extends Controller
 
         $quiz->delete();
 
-        return redirect()->route('quizzes.index', $course)
+        return redirect()->route('courses.quizzes.index', $course)
             ->with('success', 'Kuis berhasil dihapus.');
     }
 }

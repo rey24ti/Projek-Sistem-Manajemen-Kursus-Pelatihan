@@ -29,9 +29,10 @@
             <p><strong>Peserta:</strong> {{ $course->enrollments()->where('status', 'approved')->count() }}/{{ $course->max_participants }}</p>
           </div>
         </div>
-        <div class="mt-4">
-          <a href="{{ route('materials.index', $course) }}" class="btn btn-info">Kelola Materi</a>
-          <a href="{{ route('enrollments.index', ['course_id' => $course->id]) }}" class="btn btn-success">Lihat Peserta</a>
+        <div class="mt-4 d-flex flex-wrap gap-2">
+          <a href="{{ route('materials.index', $course) }}" class="btn btn-sm btn-info">Kelola Materi</a>
+          <a href="{{ route('courses.quizzes.index', $course) }}" class="btn btn-sm btn-warning">Kelola Kuis</a>
+          <a href="{{ route('enrollments.index', ['course_id' => $course->id]) }}" class="btn btn-sm btn-success">Lihat Peserta</a>
         </div>
       </div>
     </div>

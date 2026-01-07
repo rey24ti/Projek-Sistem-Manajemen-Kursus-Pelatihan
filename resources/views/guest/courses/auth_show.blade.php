@@ -69,11 +69,7 @@
                     <i class="ni ni-book-bookmark"></i> Materi
                   </a>
                 </div>
-                <div class="col-md-3 mb-2">
-                  <a href="{{ route('courses.student.assignments', $course) }}" class="btn btn-outline-info w-100">
-                    <i class="ni ni-paper-diploma"></i> Tugas
-                  </a>
-                </div>
+                <!-- Tugas dihilangkan -->
                 <div class="col-md-3 mb-2">
                   <a href="{{ route('courses.student.quizzes', $course) }}" class="btn btn-outline-warning w-100">
                     <i class="ni ni-chart-bar-32"></i> Kuis
@@ -131,12 +127,12 @@
           @endif
         @endif
 
-        @if($course->materials->count() > 0 || $course->assignments->count() > 0 || $course->quizzes->count() > 0)
+        @if($course->materials->count() > 0 || $course->quizzes->count() > 0)
           <div class="mt-4">
             <h6>Isi Kursus</h6>
             <div class="row">
               @if($course->materials->count() > 0)
-                <div class="col-md-4 mb-2">
+                <div class="col-md-6 mb-2">
                   <div class="card">
                     <div class="card-body text-center">
                       <i class="ni ni-book-bookmark text-primary" style="font-size: 2rem;"></i>
@@ -145,18 +141,8 @@
                   </div>
                 </div>
               @endif
-              @if($course->assignments->count() > 0)
-                <div class="col-md-4 mb-2">
-                  <div class="card">
-                    <div class="card-body text-center">
-                      <i class="ni ni-paper-diploma text-info" style="font-size: 2rem;"></i>
-                      <h6 class="mt-2">{{ $course->assignments->count() }} Tugas</h6>
-                    </div>
-                  </div>
-                </div>
-              @endif
               @if($course->quizzes->count() > 0)
-                <div class="col-md-4 mb-2">
+                <div class="col-md-6 mb-2">
                   <div class="card">
                     <div class="card-body text-center">
                       <i class="ni ni-chart-bar-32 text-warning" style="font-size: 2rem;"></i>

@@ -58,6 +58,7 @@
             </thead>
             <tbody>
               <?php $__empty_1 = true; $__currentLoopData = $enrollments; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $enrollment): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+              <?php /** @var \App\Models\Enrollment $enrollment */ ?>
               <tr>
                 <td>
                   <div class="d-flex px-2 py-1">
@@ -82,13 +83,13 @@
                       </div>
                     </div>
                     <div class="progress">
-                      <div class="progress-bar bg-gradient-info" style="<?php echo 'width: ' . $enrollment->progress . '%;'; ?>"></div>
+                      <div class="progress-bar bg-gradient-info" style="width: <?php echo e($enrollment->progress ?? 0); ?>%;"></div>
                     </div>
                   </div>
                 </td>
 
                 <td class="align-middle text-center">
-                  <span class="text-secondary text-xs font-weight-bold"><?php echo e($enrollment->enrollment_date->format('d M Y')); ?></span>
+                  <span class="text-secondary text-xs font-weight-bold"><?php echo e($enrollment->enrollment_date?->format('d M Y') ?? '-'); ?></span>
                 </td>
 
                 <td class="align-middle text-center text-sm">

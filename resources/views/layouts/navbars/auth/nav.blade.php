@@ -29,9 +29,17 @@
                     <a href="javascript:;" class="nav-link text-body p-0" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                         <div class="d-flex align-items-center">
                             <div class="avatar avatar-sm me-2">
-                                <div class="avatar avatar-sm bg-gradient-{{ auth()->user()->role == 'admin' ? 'primary' : (auth()->user()->role == 'staff' ? 'info' : 'success') }} rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
-                                    <span class="text-white text-sm font-weight-bold">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</span>
-                                </div>
+                                @if(auth()->user()->profile_photo_path)
+                                    <img
+                                        src="{{ Storage::url(auth()->user()->profile_photo_path) }}"
+                                        alt="profile_photo"
+                                        class="avatar avatar-sm rounded-circle"
+                                        style="width: 40px; height: 40px; object-fit: cover;">
+                                @else
+                                    <div class="avatar avatar-sm bg-gradient-{{ auth()->user()->role == 'admin' ? 'primary' : (auth()->user()->role == 'staff' ? 'info' : 'success') }} rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                        <span class="text-white text-sm font-weight-bold">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</span>
+                                    </div>
+                                @endif
                             </div>
                             <div class="d-flex flex-column align-items-start d-none d-md-block">
                                 <span class="text-sm font-weight-bold text-dark mb-0">{{ auth()->user()->name }}</span>
