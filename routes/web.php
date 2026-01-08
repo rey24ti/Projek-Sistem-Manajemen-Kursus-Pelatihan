@@ -35,6 +35,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('enrollments', EnrollmentController::class)->except(['create', 'edit']);
     Route::post('enrollments/register', [EnrollmentController::class, 'store'])->name('enrollments.register');
     Route::post('enrollments/{enrollment}/verify-payment', [EnrollmentController::class, 'verifyPayment'])->name('enrollments.verify-payment');
+    Route::post('enrollments/{enrollment}/reject-payment', [EnrollmentController::class, 'rejectPayment'])->name('enrollments.reject-payment');
     Route::post('enrollments/{enrollment}/update-progress', [EnrollmentController::class, 'updateProgress'])->name('enrollments.update-progress');
 
     // Admin routes

@@ -192,6 +192,36 @@ class EnrollmentController extends Controller
     }
 
     /**
+     * Reject payment for enrollment
+     */
+    public function rejectPayment(Request $request, Enrollment $enrollment)
+    {
+        $validator = Validator::make($request->all(), [
+            'notes' => 'required|string|max:1000',
+        ]);
+
+        if ($validator->fails()) {
+            return back()->withErrors($validator)->withInput();
+        }
+
+        $data = [
+            'payment_status' => 'rejected',
+            'status' => 'rejected',
+        ];
+
+        // Append notes with rejection reason
+        if ($request->filled('notes')) {
+            $data['notes'] = $enrollment->notes
+                ? $enrollment->notes . "\n[Payment Rejected] " . $request->notes
+                : "[Payment Rejected] " . $request->notes;
+        }
+
+        $enrollment->update($data);
+
+        return back()->with('success', 'Pembayaran berhasil ditolak.');
+    }
+
+    /**
      * Update progress for enrollment
      */
     public function updateProgress(Request $request, Enrollment $enrollment)
